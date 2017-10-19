@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using CurrencyLayerApp.DAL.Entities;
 using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Models;
 
@@ -27,6 +29,23 @@ namespace CurrencyLayerApp.Helpers
                 models[index] = new CurrencyModel() {Code = splited.First(), Name = splited.Last()};
             }
             return models;
+        }
+        public static CurrencyModel[] GetStoredModels()
+        {
+            var result = Parsers.ParseCurrencyModels();
+            var uow = UnitOfWork.Instance;
+            if (uow.Any(typeof(Currency)))
+            {
+                var models = uow.GetCurrencies();
+                foreach (var model in models)
+                {
+                    if (result.Any(x => x.Code == model.Code))
+                    {
+                        result.First(x => x.Code == model.Code).IsSelected = true;
+                    }
+                }
+            }
+            return result;
         }
     }
 }

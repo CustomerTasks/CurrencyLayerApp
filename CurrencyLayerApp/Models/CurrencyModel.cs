@@ -6,11 +6,20 @@ using System.Threading.Tasks;
 
 namespace CurrencyLayerApp.Models
 {
-    [Serializable]
-    public class CurrencyModel
+    interface ICurrency
     {
-        public string Code { get; set; }
+         string Code { get; set; }
+    }
+    public class CurrencyModel: ICurrency
+    {
         public string Name { get; set; }
         public bool IsSelected { get; set; } = false;
+        public string Code { get; set; }
+    }
+
+    class CurrencyRate : ICurrency
+    {
+        public string Code { get; set; }
+        public double Rate { get; set; }
     }
 }
