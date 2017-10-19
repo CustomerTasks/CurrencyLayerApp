@@ -1,0 +1,86 @@
+﻿<Page x:Class="CurrencyLayerApp.Views.Pages.SettingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CurrencyLayerApp.Views.Pages"
+      xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:resx="clr-namespace:CurrencyLayerApp.Resources.Strings"
+      xmlns:viewModels="clr-namespace:CurrencyLayerApp.ViewModels"
+      mc:Ignorable="d"  d:DesignWidth="600"
+      Title="SettingPage">
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="15"/>
+        </Style>
+        <Style TargetType="Grid" x:Key="CustomGrid">
+            <Setter Property="Margin" Value="15"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Page.Resources>
+    <Page.DataContext>
+        <viewModels:SettingViewModel/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Style="{StaticResource CustomGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{x:Static resx:SettingPage.ApiKey}" Margin="0,0,4,0"/>
+            <TextBox Grid.Column="1" Width="256" VerticalContentAlignment="Center"/>
+        </Grid>
+        <Grid Grid.Row="1" Style="{StaticResource CustomGrid}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{x:Static resx:SettingPage.ApiTime}" Margin="0,0,4,0"/>
+            <toolkit:IntegerUpDown Grid.Column="1" Minimum="0" Value="10"/>
+        </Grid>
+
+        <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"  Header="{x:Static resx:SettingPage.CurrencySelector}">
+            <StackPanel Orientation="Vertical">
+                <ListView Width="300" 
+                          Height="300" 
+                          ItemsSource="{Binding CurrencyModels}"
+                          SelectionMode="Single"
+                          >
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn Header="#" Width="30">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsSelected}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Code" Width="50" DisplayMemberBinding="{Binding Code}"/>
+                                <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </GroupBox>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="2">
+            <Button Content="Save" Command="{Binding SaveChanges}"/>
+            <Button Content="Set Default"/>
+        </StackPanel>
+    </Grid>
+</Page>
