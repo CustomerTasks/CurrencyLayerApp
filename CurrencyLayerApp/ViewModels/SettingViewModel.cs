@@ -19,7 +19,7 @@ namespace CurrencyLayerApp.ViewModels
 
         public SettingViewModel()
         {
-            CurrencyModels = new ObservableCollection<CurrencyModel>(Parsers.ParseCurrencyModels());
+            CurrencyModels = GetStoredModels();
             SaveChanges = new Command(Save);
         }
 
@@ -41,6 +41,24 @@ namespace CurrencyLayerApp.ViewModels
                 _savechanges = value;
                 OnPropertyChanged();
             }
+        }
+
+        private ObservableCollection<CurrencyModel> GetStoredModels()
+        {
+            var result = Parsers.ParseCurrencyModels();
+            var uow = UnitOfWork.Instance;
+            if (uow.Any(typeof(Currency)))
+            {
+                var models = uow.GetCurrencies();
+                foreach (var model in models)
+                {
+                    if (result.Any(x => x.Code == model.Code))
+                    {
+                        result.First(x => x.Code == model.Code).IsSelected = true;
+                    }
+                }
+            }
+            return new ObservableCollection<CurrencyModel>(result);
         }
 
         private void Save()

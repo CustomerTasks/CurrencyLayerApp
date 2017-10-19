@@ -12,7 +12,9 @@ namespace CurrencyLayerApp.DAL.Repositories
         void Add(T item);
         void Delete(Func<T, bool> func);
         T Get(Func<T, bool> func);
+        T[] GetAll();
         void Truncate();
         void Save();
+        bool NotEmpty();
     }
 }

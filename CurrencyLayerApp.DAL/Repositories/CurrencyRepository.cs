@@ -38,6 +38,11 @@ namespace CurrencyLayerApp.DAL.Repositories
             return Set.FirstOrDefault(func);
         }
 
+        public Currency[] GetAll()
+        {
+            return Set.ToArray();
+        }
+
         public void Truncate()
         {
             Set.RemoveRange(Set);
@@ -46,6 +51,11 @@ namespace CurrencyLayerApp.DAL.Repositories
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        public bool NotEmpty()
+        {
+            return Set.Any();
         }
     }
 }

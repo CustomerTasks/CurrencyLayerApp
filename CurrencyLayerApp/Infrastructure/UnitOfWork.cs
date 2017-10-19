@@ -23,6 +23,17 @@ namespace CurrencyLayerApp.Infrastructure
         {
             _repository.Add(currency);
         }
+
+        public Currency Get(Func<Currency, bool> func)
+        {
+            return _repository.Get(func);
+        }
+        public bool Any(Type type)
+        {
+            if (type == typeof(Currency))
+                return _repository.NotEmpty();
+            return false;
+        }
         public void Delete(Func<Currency,bool> func)
         {
             _repository.Delete(func);
@@ -36,6 +47,11 @@ namespace CurrencyLayerApp.Infrastructure
         public void Save()
         {
             _repository.Save();
+        }
+
+        public Currency[] GetCurrencies()
+        {
+            return _repository.GetAll();
         }
     }
 }
