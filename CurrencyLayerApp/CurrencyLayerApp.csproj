@@ -138,14 +138,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Abstractions\IDownloader.cs" />
     <Compile Include="Helpers\ClassConverters.cs" />
     <Compile Include="Helpers\Command.cs" />
+    <Compile Include="Infrastructure\DataManagers\ApiDataManagerForCurrencies.cs" />
+    <Compile Include="Infrastructure\DataManagers\ApiDataManagerForHistoricalData.cs" />
+    <Compile Include="Infrastructure\DataManagers\IDataManager.cs" />
     <Compile Include="Infrastructure\Global\CommonData.cs" />
     <Compile Include="Helpers\Parsers.cs" />
     <Compile Include="Infrastructure\Converters\CurrentModelConverter.cs" />
     <Compile Include="Infrastructure\CurrencyLayerProvider.cs" />
     <Compile Include="Infrastructure\Global\Settings.cs" />
-    <Compile Include="Infrastructure\Global\UnitOfWork.cs" />
+    <Compile Include="Infrastructure\DataManagers\LocalDataManagerForHistoricalData.cs" />
     <Compile Include="Models\CurrencyModel.cs" />
     <Compile Include="Models\ApiCurrencyModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -161,6 +165,7 @@
     </Compile>
     <Compile Include="ViewModels\CurrentDataViewModel.cs" />
     <Compile Include="ViewModels\HistoricalDataViewModel.cs" />
+    <Compile Include="Infrastructure\DataManagers\LocalDataManagerForCurrencies.cs" />
     <Compile Include="ViewModels\SettingViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -168,6 +173,9 @@
     </Compile>
     <Compile Include="Views\Pages\CurrentData.xaml.cs">
       <DependentUpon>CurrentData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ExchangeData.xaml.cs">
+      <DependentUpon>ExchangeData.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\HistoricalData.xaml.cs">
       <DependentUpon>HistoricalData.xaml</DependentUpon>
@@ -184,6 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\CurrentData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\ExchangeData.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -258,9 +270,7 @@
       <Name>CurrencyLayerApp.DAL</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
       <Visible>False</Visible>
@@ -274,6 +284,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Pictures\Flags\xc.png" />
+    <Resource Include="Resources\Pictures\Flags\xa.png" />
     <Resource Include="Resources\Pictures\Flags\ad.png" />
     <Resource Include="Resources\Pictures\Flags\ae.png" />
     <Resource Include="Resources\Pictures\Flags\af.png" />
@@ -527,13 +539,6 @@
     <Resource Include="Resources\Pictures\Flags\za.png" />
     <Resource Include="Resources\Pictures\Flags\zm.png" />
     <Resource Include="Resources\Pictures\Flags\zw.png" />
-    <Content Include="StandartConnection.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StandartConnection_log.ldf">
-      <DependentUpon>StandartConnection.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

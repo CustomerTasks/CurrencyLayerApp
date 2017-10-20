@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CurrencyLayerApp.DAL.Repositories
 {
-    public interface IRepository<T> where T:class
+    internal interface IRepository<T>:IDisposable where T:class
     {
         void Add(T item);
         void Delete(Func<T, bool> func);

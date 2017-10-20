@@ -154,14 +154,8 @@ VND	Vietnamese Dong
 VUV	Vanuatu Vatu
 WST	Samoan Tala
 XAF	CFA Franc BEAC
-XAG	Silver (troy ounce)
-XAU	Gold (troy ounce)
 XCD	East Caribbean Dollar
-XDR	Special Drawing Rights
-XOF	CFA Franc BCEAO
-XPF	CFP Franc
 YER	Yemeni Rial
 ZAR	South African Rand
-ZMK	Zambian Kwacha (pre-2013)
 ZMW	Zambian Kwacha
 ZWL	Zimbabwean Dollar

@@ -11,11 +11,8 @@ namespace CurrencyLayerApp.Views.Pages
         public CurrentData()
         {
             InitializeComponent();
-            var context = new CurrentDataViewModel();
+            var context = new CurrentDataViewModel(CurrentDataGrid);
             DataContext = context;
-            context.InitializeData(CurrentDataGrid);
         }
-
-        
     }
 }

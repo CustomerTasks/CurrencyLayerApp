@@ -126,4 +126,10 @@
   <data name="CurrencySelector" xml:space="preserve">
     <value>Selected currencies:</value>
   </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SetDefaultButton" xml:space="preserve">
+    <value>Set Default</value>
+  </data>
 </root>

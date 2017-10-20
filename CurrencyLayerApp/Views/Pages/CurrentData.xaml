@@ -7,9 +7,6 @@
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="600"
       Title="CurrentData">
-    <Page.DataContext>
-        <viewModels:CurrentDataViewModel/>
-    </Page.DataContext>
     <Page.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>

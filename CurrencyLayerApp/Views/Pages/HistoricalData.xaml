@@ -41,12 +41,12 @@
                     VerticalAlignment="Center"
                     >
             <TextBlock Text="Currency pair:" TextAlignment="Center"/>
-            <StackPanel Orientation="Horizontal"  >
+            <StackPanel Orientation="Horizontal">
                     <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" SelectedItem="{Binding CurrencyModelFrom , Converter= {StaticResource CurrentModelConverter}}"/>
                 <TextBlock Text=" / "/>
                     <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" SelectedItem="{Binding CurrencyModelTo , Converter= {StaticResource CurrentModelConverter}}"/>
                 </StackPanel>
-            <Button Content="Refresh" Command="{Binding Refresh}" Margin="0,6,0,0"/>
+            
         </StackPanel>
         </DockPanel>
     </Grid>

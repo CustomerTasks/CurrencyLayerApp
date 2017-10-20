@@ -6,24 +6,24 @@ using CurrencyLayerApp.DAL.Entities;
 
 namespace CurrencyLayerApp.DAL.Repositories
 {
-    internal class CurrencyRepository : IRepository<Currency>
+    internal class HistoricalDataRepository : IRepository<HistoricalData>
     {
         private readonly CurrencyLayerContext _context;
 
-        public CurrencyRepository(CurrencyLayerContext context)
+        public HistoricalDataRepository(CurrencyLayerContext context)
         {
             _context = context;
-            Set = _context.Currencies;
+            Set = _context.HistoricalDatas;
         }
 
-        public DbSet<Currency> Set { get; set; }
+        public DbSet<HistoricalData> Set { get; set; }
 
-        public void Add(Currency item)
+        public void Add(HistoricalData item)
         {
             Set.Add(item);
         }
 
-        public void Delete(Func<Currency, bool> func)
+        public void Delete(Func<HistoricalData, bool> func)
         {
             var found = Get(func);
             if (found == null)
@@ -33,11 +33,11 @@ namespace CurrencyLayerApp.DAL.Repositories
             Set.Remove(found);
         }
 
-        public Currency Get(Func<Currency, bool> func)
+        public HistoricalData Get(Func<HistoricalData, bool> func)
         {
             return Set.FirstOrDefault(func);
         }
-        public Currency[] GetAll()
+        public HistoricalData[] GetAll()
         {
             return Set.ToArray();
         }

@@ -86,5 +86,23 @@ namespace CurrencyLayerApp.Resources.Strings {
                 return ResourceManager.GetString("CurrencySelector", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Save.
+        /// </summary>
+        public static string SaveButton {
+            get {
+                return ResourceManager.GetString("SaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Set Default.
+        /// </summary>
+        public static string SetDefaultButton {
+            get {
+                return ResourceManager.GetString("SetDefaultButton", resourceCulture);
+            }
+        }
     }
 }

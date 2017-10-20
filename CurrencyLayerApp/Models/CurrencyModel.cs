@@ -15,6 +15,7 @@ namespace CurrencyLayerApp.Models
         public string Name { get; set; }
         public bool IsSelected { get; set; } = false;
         public string Code { get; set; }
+        public double Rating { get; set; }
     }
 
     class CurrencyRate : ICurrency

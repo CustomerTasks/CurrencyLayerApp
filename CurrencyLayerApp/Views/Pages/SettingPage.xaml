@@ -79,9 +79,9 @@
                 </ListView>
             </StackPanel>
         </GroupBox>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="2">
-            <Button Content="Save" Command="{Binding SaveChanges}"/>
-            <Button Content="Set Default"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="2">
+            <Button Content="{x:Static resx:SettingPage.SaveButton}" Command="{Binding SaveChanges}"/>
+            <Button Content="{x:Static resx:SettingPage.SetDefaultButton}" Command="{Binding SetDefaultValues}"/>
         </StackPanel>
     </Grid>
 </Page>

@@ -1,68 +1,112 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CurrencyLayerApp.Abstractions;
 using CurrencyLayerApp.Helpers;
-using CurrencyLayerApp.Infrastructure;
+using CurrencyLayerApp.Infrastructure.DataManagers;
 using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    class CurrentDataViewModel : ViewModelBase
+    class CurrentDataViewModel : ViewModelBase, IDownloader
     {
-        //private DataView _datatable;
-        private ObservableCollection<CurrencyModel> _currencyModels;
-        private GridViewColumnCollection _data;
-        private double[,] _rates;
-        public CurrentDataViewModel()
+        public CurrentDataViewModel(Grid grid)
         {
+            _grid = grid;
+            Thread = new Thread(DownloadData);
             _currencyModels =
                 new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels(true));
-            DownloadData();
+            Thread.Start();
         }
 
-        private void DownloadData()
+        #region <Fields>
+
+        private ObservableCollection<CurrencyModel> _currencyModels;
+        private double[,] _rates;
+        private readonly Grid _grid;
+        private IDataManager<ApiCurrencyModel> _dataManager;
+
+        #endregion
+
+        #region <Properties>
+
+        public Thread Thread { get; set; }
+
+        #endregion
+
+        #region <Methods>
+
+        public void DownloadData()
         {
-            CurrencyLayerProvider provider = new CurrencyLayerProvider(new HttpClient());
-            var liveCurrencyModel = provider.GetLiveCurrencyModel(_currencyModels.ToArray());
-            var dictionary = liveCurrencyModel.Quotes;
-            var size = dictionary.Count;
-            _rates=new double[size,size];
-            int i = 0, j=0;
-            foreach (var code1 in dictionary)
+            while (true)
             {
-                j = 0;
-                foreach (var code2 in dictionary)
+                try
                 {
-                    _rates[i, j++] = code2.Value / code1.Value;
+                    if (!Settings.Instance.IsPrepared || !_currencyModels.Any())
+                        return;
+
+                    _dataManager = new ApiDataManagerForCurrencies(_currencyModels.ToArray());
+                    var liveCurrencyModel = _dataManager.Upload();
+                    if (liveCurrencyModel == null)
+                    {
+                        _dataManager = new LocalDataManagerForCurrencies(_currencyModels.ToArray());
+                        liveCurrencyModel = _dataManager.Upload();
+                    }
+
+                    var dictionary = liveCurrencyModel.Quotes;
+                    var size = dictionary.Count;
+                    _rates = new double[size, size];
+                    int i = 0, j;
+                    foreach (var code1 in dictionary)
+                    {
+                        j = 0;
+                        foreach (var code2 in dictionary)
+                        {
+                            _rates[i, j++] = code2.Value / code1.Value;
+                        }
+                        i++;
+                    }
+                    Task.Run(() => _dataManager.Save(liveCurrencyModel));
+                    _grid.Dispatcher.BeginInvoke((Action) InitializeData);
+                    Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
                 }
-                i++;
+                catch (Exception e)
+                {
+                    //ignored
+                }
             }
         }
 
-        public void InitializeData(Grid grid)
+        #endregion
+
+        #region <Additional>
+
+        private void InitializeData()
         {
-           
+            if (Settings.Instance.ApiKey == null)
+                return;
             Tuple<CurrencyModel, CurrencyRate[]>[] rates =
                 new Tuple<CurrencyModel, CurrencyRate[]>[_currencyModels.Count];
-            grid.ColumnDefinitions.Clear();
-            grid.RowDefinitions.Clear();
+            _grid.ColumnDefinitions.Clear();
+            _grid.RowDefinitions.Clear();
             for (var i = 0; i <= _currencyModels.Count; i++)
             {
-                grid.ColumnDefinitions.Add(new ColumnDefinition(){Width = new GridLength(1,GridUnitType.Star)});
-                grid.RowDefinitions.Add(new RowDefinition(){ Height = new GridLength(1, GridUnitType.Star) });
+                _grid.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
+                _grid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)});
                 if (i < _currencyModels.Count)
                 {
                     rates[i] = new Tuple<CurrencyModel, CurrencyRate[]>(_currencyModels[i],
                         new CurrencyRate[_currencyModels.Count]);
                     for (int j = 0; j < rates[i].Item2.Length; j++)
                     {
-                        rates[i].Item2[j] = new CurrencyRate {Code = _currencyModels[j].Code, Rate = _rates[i,j]};
+                        rates[i].Item2[j] = new CurrencyRate {Code = _currencyModels[j].Code, Rate = _rates[i, j]};
                     }
                 }
             }
@@ -75,12 +119,12 @@ namespace CurrencyLayerApp.ViewModels
                 var rowpicturedPanel = GetStackPanel();
                 rowpicturedPanel.Orientation = Orientation.Horizontal;
                 rowpicturedPanel.Children.Add(new Image() {Source = GetImage(rates[i].Item1)});
-                rowpicturedPanel.Children.Add(GetTextBlock($"1 {rates[i].Item1.Code}",Brushes.Gray));
+                rowpicturedPanel.Children.Add(GetTextBlock($"1 {rates[i].Item1.Code}", Brushes.Gray));
                 rowheader.Children.Add(rowpicturedPanel);
                 rowheader.Children.Add(GetTextBlock("Inverse:", Brushes.Gray));
                 var colheader = GetStackPanel();
                 colheader.Orientation = Orientation.Horizontal;
-                colheader.Children.Add(new Image() { Source = GetImage(rates[i].Item1) });
+                colheader.Children.Add(new Image() {Source = GetImage(rates[i].Item1)});
                 colheader.Children.Add(GetTextBlock($"{rates[i].Item1.Code}", Brushes.Gray));
 
                 var panRowHeader = GetPanel(rowheader);
@@ -89,8 +133,8 @@ namespace CurrencyLayerApp.ViewModels
                 var panColHeader = GetPanel(colheader);
                 panColHeader.SetValue(Grid.RowProperty, 0);
                 panColHeader.SetValue(Grid.ColumnProperty, i + 1);
-                grid.Children.Add(panColHeader);
-                grid.Children.Add(panRowHeader);
+                _grid.Children.Add(panColHeader);
+                _grid.Children.Add(panRowHeader);
 
                 #endregion
 
@@ -103,13 +147,14 @@ namespace CurrencyLayerApp.ViewModels
                     panel.Children.Add(GetTextBlock(Math.Round(rates[i].Item2[j].Rate, 5).ToString(), Brushes.Black));
                     if (i != j)
                     {
-                        panel.Children.Add( GetTextBlock (Math.Round(rates[j].Item2[i].Rate, 5).ToString(),Brushes.DarkGray));
+                        panel.Children.Add(GetTextBlock(Math.Round(rates[j].Item2[i].Rate, 5).ToString(),
+                            Brushes.DarkGray));
                     }
                     var panelmain = GetPanel(panel);
                     panelmain.Background = i % 2 != 0 ? Brushes.White : Brushes.LightGray;
                     panelmain.SetValue(Grid.ColumnProperty, j + 1);
                     panelmain.SetValue(Grid.RowProperty, i + 1);
-                    grid.Children.Add(panelmain);
+                    _grid.Children.Add(panelmain);
                 }
             }
 
@@ -131,19 +176,21 @@ namespace CurrencyLayerApp.ViewModels
         {
             return new TextBlock()
             {
-               Text = text, Foreground = brush
+                Text = text,
+                Foreground = brush
             };
         }
 
         private DockPanel GetPanel(params UIElement[] children)
         {
-            var panel= new DockPanel();
+            var panel = new DockPanel();
             foreach (var child in children)
             {
                 panel.Children.Add(child);
             }
             return panel;
         }
+
         private StackPanel GetStackPanel()
         {
             return new StackPanel()
@@ -154,45 +201,6 @@ namespace CurrencyLayerApp.ViewModels
             };
         }
 
-        /*private void FillTable()
-        {
-            var dataTable=new DataTable();
-            dataTable.Columns.Add("#");
-            foreach (var model in _currencyModels)
-            {
-                dataTable.Columns.Add(model.Code);
-            }
-            foreach (var model in _currencyModels)
-            {
-                DataRow row = dataTable.NewRow();
-                row["#"] = model.Code +"\n Inverse:";
-                foreach (var currencyModel in _currencyModels)
-                {
-                    row[currencyModel.Code] = currencyModel.Code==model.Code?"1\n1": "0\n0";
-                }
-                dataTable.Rows.Add(row);
-            }
-            DataTable = dataTable.DefaultView;
-        }
-
-        public DataView DataTable
-        {
-            get { return _datatable; }
-            set
-            {
-                _datatable = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public GridViewColumnCollection Data
-        {
-            get { return _data; }
-            set
-            {
-                _data = value;
-                OnPropertyChanged();
-            }
-        }*/
+        #endregion
     }
 }

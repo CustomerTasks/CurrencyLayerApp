@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using CurrencyLayerApp.DAL.Entities;
+using CurrencyLayerApp.DAL.Infrastructure;
 using CurrencyLayerApp.Helpers;
-using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
 
@@ -11,27 +11,27 @@ namespace CurrencyLayerApp.ViewModels
 {
     class SettingViewModel : ViewModelBase
     {
-        private ObservableCollection<CurrencyModel> _currencyModels;
-        private ICommand _savechanges;
-        private string _apiKey;
-        private int _time;
-
         public SettingViewModel()
         {
             CurrencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels());
             InitCheckBoxs();
-            SaveChanges = new Command(Save);
-            Time = 10;
+            SaveChanges = new Command(() => Task.Run(() => Save()));
+            SetDefaultValues = new Command(SetDefault);
+            ApiKey = Settings.Instance.ApiKey;
+            Time = Settings.Instance.TimeBetweenCalls;
         }
 
-        private void InitCheckBoxs()
-        {
-            var list = Parsers.GetStoredModels(true);
-            foreach (var model in list)
-            {
-                CurrencyModels.First(x => x.Code == model.Code).IsSelected = model.IsSelected;
-            }
-        }
+        #region <Fields>
+
+        private ObservableCollection<CurrencyModel> _currencyModels;
+        private ICommand _savechanges;
+        private string _apiKey;
+        private int _time = 10;
+        private ICommand _setDefaultValues;
+
+        #endregion
+
+        #region <Properties>
 
         public ObservableCollection<CurrencyModel> CurrencyModels
         {
@@ -75,6 +75,20 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
+        public ICommand SetDefaultValues
+        {
+            get { return _setDefaultValues; }
+            set
+            {
+                _setDefaultValues = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region <Methods>
+
         private void Save()
         {
             var uow = UnitOfWork.Instance;
@@ -87,9 +101,37 @@ namespace CurrencyLayerApp.ViewModels
                 }
             }
             uow.Save();
-
-
             Settings.Instance.Save();
         }
+
+        private void SetDefault()
+        {
+            ApiKey = "";
+            Time = 0;
+            foreach (var currencyModel in CurrencyModels)
+            {
+                if (currencyModel.IsSelected)
+                {
+                    currencyModel.IsSelected = false;
+                }
+            }
+        }
+
+        private void InitCheckBoxs()
+        {
+            var list = Parsers.GetStoredModels(true);
+            foreach (var model in list)
+            {
+                CurrencyModels.First(x => x.Code == model.Code).IsSelected = model.IsSelected;
+            }
+        }
+
+        #endregion
+
+        #region <Additional>
+
+
+
+        #endregion
     }
 }
