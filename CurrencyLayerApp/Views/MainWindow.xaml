@@ -16,8 +16,8 @@
         </Style>
         <Style TargetType="Frame">
             <Setter Property="NavigationUIVisibility" Value="Hidden"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
         </Style>
     </Window.Resources>
     <Window.Background>
@@ -36,8 +36,7 @@
                         <TextBlock Text="{x:Static resx:MainWindow.CurrentData}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
-                <Frame Source="Pages/CurrentData.xaml"
-                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Frame Source="Pages/CurrentData.xaml"/>
             </TabItem>
             <TabItem>
                 <TabItem.Header>
@@ -46,6 +45,7 @@
                         <TextBlock Text="{x:Static resx:MainWindow.HistoricalData}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
+                <Frame Source="Pages/HistoricalData.xaml"/>
             </TabItem>
             <TabItem>
                 <TabItem.Header>

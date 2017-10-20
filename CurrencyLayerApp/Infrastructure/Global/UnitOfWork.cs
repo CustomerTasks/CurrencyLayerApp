@@ -1,9 +1,9 @@
 ﻿using System;
-using CurrencyLayerApp.DAL.Entities;
 using CurrencyLayerApp.DAL.Contexts;
+using CurrencyLayerApp.DAL.Entities;
 using CurrencyLayerApp.DAL.Repositories;
 
-namespace CurrencyLayerApp.Infrastructure
+namespace CurrencyLayerApp.Infrastructure.Global
 {
     sealed class UnitOfWork
     {

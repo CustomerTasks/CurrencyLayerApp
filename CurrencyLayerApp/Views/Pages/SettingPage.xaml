@@ -42,7 +42,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{x:Static resx:SettingPage.ApiKey}" Margin="0,0,4,0"/>
-            <TextBox Grid.Column="1" Width="256" VerticalContentAlignment="Center"/>
+            <TextBox Grid.Column="1" Width="256" VerticalContentAlignment="Center"
+                     Text="{Binding ApiKey}"/>
         </Grid>
         <Grid Grid.Row="1" Style="{StaticResource CustomGrid}">
             <Grid.ColumnDefinitions>
@@ -50,7 +51,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="{x:Static resx:SettingPage.ApiTime}" Margin="0,0,4,0"/>
-            <toolkit:IntegerUpDown Grid.Column="1" Minimum="0" Value="10"/>
+            <toolkit:IntegerUpDown Grid.Column="1" Minimum="0" Value="{Binding Time}"/>
         </Grid>
 
         <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"  Header="{x:Static resx:SettingPage.CurrencySelector}">

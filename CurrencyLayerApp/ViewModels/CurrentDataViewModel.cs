@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CurrencyLayerApp.Helpers;
 using CurrencyLayerApp.Infrastructure;
+using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
@@ -16,16 +18,36 @@ namespace CurrencyLayerApp.ViewModels
         //private DataView _datatable;
         private ObservableCollection<CurrencyModel> _currencyModels;
         private GridViewColumnCollection _data;
-
+        private double[,] _rates;
         public CurrentDataViewModel()
         {
             _currencyModels =
-                new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels().Where(x => x.IsSelected));
-            //FillTable();
+                new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels(true));
+            DownloadData();
+        }
+
+        private void DownloadData()
+        {
+            CurrencyLayerProvider provider = new CurrencyLayerProvider(new HttpClient());
+            var liveCurrencyModel = provider.GetLiveCurrencyModel(_currencyModels.ToArray());
+            var dictionary = liveCurrencyModel.Quotes;
+            var size = dictionary.Count;
+            _rates=new double[size,size];
+            int i = 0, j=0;
+            foreach (var code1 in dictionary)
+            {
+                j = 0;
+                foreach (var code2 in dictionary)
+                {
+                    _rates[i, j++] = code2.Value / code1.Value;
+                }
+                i++;
+            }
         }
 
         public void InitializeData(Grid grid)
         {
+           
             Tuple<CurrencyModel, CurrencyRate[]>[] rates =
                 new Tuple<CurrencyModel, CurrencyRate[]>[_currencyModels.Count];
             grid.ColumnDefinitions.Clear();
@@ -40,7 +62,7 @@ namespace CurrencyLayerApp.ViewModels
                         new CurrencyRate[_currencyModels.Count]);
                     for (int j = 0; j < rates[i].Item2.Length; j++)
                     {
-                        rates[i].Item2[j] = new CurrencyRate {Code = _currencyModels[j].Code, Rate = i == j ? 1 : 0};
+                        rates[i].Item2[j] = new CurrencyRate {Code = _currencyModels[j].Code, Rate = _rates[i,j]};
                     }
                 }
             }

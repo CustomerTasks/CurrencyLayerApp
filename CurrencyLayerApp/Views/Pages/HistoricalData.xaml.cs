@@ -10,17 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using CurrencyLayerApp.Infrastructure.Global;
 
-namespace CurrencyLayerApp.Views
+namespace CurrencyLayerApp.Views.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для HistoricalData.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HistoricalData : Page
     {
-        public MainWindow()
+        public HistoricalData()
         {
             InitializeComponent();
         }

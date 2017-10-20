@@ -3,13 +3,14 @@ using System.IO;
 using System.Linq;
 using CurrencyLayerApp.DAL.Entities;
 using CurrencyLayerApp.Infrastructure;
+using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.Helpers
 {
     public static class Parsers
     {
-        public static CurrencyModel[] ParseCurrencyModels(string path = null)
+        private static CurrencyModel[] ParseCurrencyModels(string path = null)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -30,11 +31,12 @@ namespace CurrencyLayerApp.Helpers
             }
             return models;
         }
-        public static CurrencyModel[] GetStoredModels()
+
+        public static CurrencyModel[] GetStoredModels(bool selected=false)
         {
             var result = Parsers.ParseCurrencyModels();
             var uow = UnitOfWork.Instance;
-            if (uow.Any(typeof(Currency)))
+            if (selected && uow.Any(typeof(Currency)))
             {
                 var models = uow.GetCurrencies();
                 foreach (var model in models)
@@ -44,8 +46,10 @@ namespace CurrencyLayerApp.Helpers
                         result.First(x => x.Code == model.Code).IsSelected = true;
                     }
                 }
+                result = result.Where(x => x.IsSelected).ToArray();
             }
             return result;
         }
+        
     }
 }

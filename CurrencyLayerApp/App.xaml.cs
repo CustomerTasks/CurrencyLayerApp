@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using CurrencyLayerApp.Infrastructure;
+using CurrencyLayerApp.Infrastructure.Global;
 
 namespace CurrencyLayerApp
 {
@@ -14,5 +15,6 @@ namespace CurrencyLayerApp
     /// </summary>
     public partial class App : Application
     {
+       
     }
 }

@@ -17,8 +17,21 @@ namespace CurrencyLayerApp.Tests
         public void CheckParsing()
         {
             //var path = Environment.CurrentDirectory;
-            var res = Parsers.ParseCurrencyModels(@"D:\Clouds\MegaNZ\Freelance\UpWork\Moshe Do- CurrencyLayer\CurrencyLayerApp\CurrencyLayerApp\Resources\Currencies.txt");
-            Assert.True(res.Any());
+            /*var res = Parsers.ParseCurrencyModels(@"D:\Clouds\MegaNZ\Freelance\UpWork\Moshe Do- CurrencyLayer\CurrencyLayerApp\CurrencyLayerApp\Resources\Currencies.txt");
+            Assert.True(res.Any());*/
+        }
+        [Test]
+        public void TestMethod()
+        {
+            try
+            {
+                var data = DateTime.Now;
+                string str2 = data.AddDays(-1).ToString("yyyy-MM-dd");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
