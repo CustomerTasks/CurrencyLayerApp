@@ -23,7 +23,7 @@ namespace CurrencyLayerApp.ViewModels
 
         private string _logMessage;
         private Logger.Color _color;
-        private ICommand _closeApp;
+        private bool _isOnline;
 
         #endregion
 
@@ -50,7 +50,8 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        
+
+       
 
         #endregion
 

@@ -4,14 +4,57 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CurrencyLayerApp.Views.Pages"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      xmlns:resx="clr-namespace:CurrencyLayerApp.Resources.Strings"
+      xmlns:viewModels="clr-namespace:CurrencyLayerApp.ViewModels"
+      xmlns:converters="clr-namespace:CurrencyLayerApp.Infrastructure.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       Title="ExchangeData">
+    <Page.DataContext>
+        <viewModels:ExchangeViewModel/>
+    </Page.DataContext>
+    <Page.Resources>
+        <converters:CurrentModelCollectionConverter x:Key="CurrencyConverterCollection" />
+        <converters:CurrentModelConverter x:Key="CurrentModelConverter"/>
+        <converters:FlagImageConverter x:Key="ImageConverter"/>
+    </Page.Resources>
+    <Border Style="{StaticResource BaseBorder}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center"
+                            Margin="12">
+                    <TextBlock Text="From" Margin="4"/>
+                    <StackPanel Orientation="Horizontal">
+                        <xctk:DoubleUpDown Minimum="0"  Increment="1" Margin="4" Value="{Binding CurrencyValue}" Width="100"/>
+                        <ComboBox 
+                    Margin="4" 
+                    ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" 
+                    SelectedItem="{Binding CurrencyModel , Converter= {StaticResource CurrentModelConverter}}"/>
+                    </StackPanel>
+                </StackPanel>
 
-    <DockPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <TextBlock/>
-        </StackPanel>
-    </DockPanel>
+            <GroupBox  Grid.Column="1" Margin="12"
+                Header="{x:Static resx:SettingPage.CurrencySelector}">
+                    <ListView ItemsSource="{Binding ExchangeModels, Mode=OneWay}">
+                        <ListView.View>
+                            <GridView >
+                                <GridViewColumn Header="#">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Width="22" Height="16" Stretch="Uniform" Source="{Binding Code,Converter={StaticResource ImageConverter}}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Code" DisplayMemberBinding="{Binding Code}"/>
+                                <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Value}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+        </Grid>
+    </Border>
 </Page>

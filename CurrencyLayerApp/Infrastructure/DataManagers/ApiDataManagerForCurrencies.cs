@@ -21,6 +21,7 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
 
         public void Save(ApiCurrencyModel data)
         {
+            if (data == null) return;
             var uow = UnitOfWork.Instance;
             uow.DeleteCurrencies();
             foreach (var model in data.Quotes)

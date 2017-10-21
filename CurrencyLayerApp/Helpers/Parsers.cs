@@ -39,49 +39,57 @@ namespace CurrencyLayerApp.Helpers
         {
             var result = Parsers.ParseCurrencyModels();
             var uow = UnitOfWork.Instance;
-            if (uow.Any(typeof(Currency)))
+            lock (uow)
             {
-                var models = uow.GetCurrencies();
-                foreach (var model in models)
+                if (uow.Any(typeof(Currency)))
                 {
-                    if (result.Any(x => x.Code == model.Code))
+                    var models = uow.GetCurrencies();
+                    foreach (var model in models)
                     {
-                        var first = result.First(x => x.Code == model.Code);
-                        var currencyModel = first;
-                        currencyModel.IsSelected = true;
-                        currencyModel.Rating = first.Rating;
+                        if (result.Any(x => x.Code == model.Code))
+                        {
+                            var first = result.First(x => x.Code == model.Code);
+                            var currencyModel = first;
+                            currencyModel.IsSelected = true;
+                            currencyModel.Rating = first.Rating;
+                        }
                     }
                 }
+                if (selected)
+                {
+                    result = result.Where(x => x.IsSelected).ToArray();
+                }
+                return result;
             }
-            if (selected)
-            {
-                result = result.Where(x => x.IsSelected).ToArray();
-            }
-            return result;
         }
         public static Dictionary<DateTime, ApiCurrencyModel> GetStoredHistoryData()
         {
             var uow = UnitOfWork.Instance;
             var result = new Dictionary<DateTime, ApiCurrencyModel>();
-            if (uow.Any(typeof(HistoricalData)))
+            lock (uow)
             {
-                var models = uow.GetHistoricalData();
-                foreach (var model in models)
+                if (uow.Any(typeof(HistoricalData)))
                 {
-                    var date = model.Date.Value;
-                    var modelCurrency = model.Currency;
-                    if (result.ContainsKey(date)){
-                        result[date].Code = "USD";
-                        result[date].Quotes.Add(modelCurrency.Code, model.Rating);
-                    }
-                    else
+                    var models = uow.GetHistoricalData();
+                    foreach (var model in models)
                     {
-                        result.Add(date,new ApiCurrencyModel(){Code = "USD",Quotes = {{ modelCurrency.Code, model.Rating } }});
+                        var date = model.Date.Value;
+                        var modelCurrency = model.Currency;
+                        if (result.ContainsKey(date))
+                        {
+                            result[date].Code = "USD";
+                            result[date].Quotes.Add(modelCurrency.Code, model.Rating);
+                        }
+                        else
+                        {
+                            result.Add(date,
+                                new ApiCurrencyModel() {Code = "USD", Quotes = {{modelCurrency.Code, model.Rating}}});
+                        }
                     }
+                    return result;
                 }
-                return result;
+                return null;
             }
-            return null;
         }
     }
 }

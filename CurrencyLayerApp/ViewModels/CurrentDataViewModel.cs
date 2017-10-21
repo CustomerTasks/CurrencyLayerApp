@@ -56,30 +56,42 @@ namespace CurrencyLayerApp.ViewModels
                 {
                     if (!Settings.Instance.IsPrepared || !_currencyModels.Any())
                         return;
-
-                    _dataManager = new ApiDataManagerForCurrencies(_currencyModels.ToArray());
-                    var liveCurrencyModel = _dataManager.Upload();
+                    ApiCurrencyModel liveCurrencyModel=null;
+                        _dataManager = new ApiDataManagerForCurrencies(_currencyModels.ToArray());
+                    var downloaded = _dataManager.Upload();
+                    if (downloaded != null)
+                    {
+                        IsCreated = false;
+                        liveCurrencyModel = downloaded;
+                    }
                     if (liveCurrencyModel == null)
                     {
-                        _dataManager = new LocalDataManagerForCurrencies(_currencyModels.ToArray());
+                        _dataManager = new LocalDataManagerForCurrencies();
                         liveCurrencyModel = _dataManager.Upload();
                     }
-
-                    var dictionary = liveCurrencyModel.Quotes;
-                    var size = dictionary.Count;
-                    _rates = new double[size, size];
-                    int i = 0, j;
-                    foreach (var code1 in dictionary)
+                    else
                     {
-                        j = 0;
-                        foreach (var code2 in dictionary)
-                        {
-                            _rates[i, j++] = code2.Value / code1.Value;
-                        }
-                        i++;
+                        IsCreated = false;
                     }
-                    Task.Run(() => _dataManager.Save(liveCurrencyModel));
-                    _grid.Dispatcher.BeginInvoke((Action) InitializeData);
+                    if (!IsCreated)
+                    {
+                        var dictionary = liveCurrencyModel.Quotes;
+                        var size = dictionary.Count;
+                        _rates = new double[size, size];
+                        int i = 0, j;
+                        foreach (var code1 in dictionary)
+                        {
+                            j = 0;
+                            foreach (var code2 in dictionary)
+                            {
+                                _rates[i, j++] = code2.Value / code1.Value;
+                            }
+                            i++;
+                        }
+                        Task.Run(() => _dataManager.Save(liveCurrencyModel));
+                        _grid.Dispatcher.BeginInvoke((Action) InitializeData);
+                        IsCreated = true;
+                    }
                     Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
                 }
                 catch (Exception e)
@@ -123,13 +135,13 @@ namespace CurrencyLayerApp.ViewModels
                 var rowheader = GetStackPanel();
                 var rowpicturedPanel = GetStackPanel();
                 rowpicturedPanel.Orientation = Orientation.Horizontal;
-                rowpicturedPanel.Children.Add(new Image() {Source = GetImage(rates[i].Item1)});
+                rowpicturedPanel.Children.Add(new Image() {Source = Helpers.Helpers.GetImage(rates[i].Item1)});
                 rowpicturedPanel.Children.Add(GetTextBlock($"1 {rates[i].Item1.Code}", Brushes.Gray));
                 rowheader.Children.Add(rowpicturedPanel);
                 rowheader.Children.Add(GetTextBlock("Inverse:", Brushes.Gray));
                 var colheader = GetStackPanel();
                 colheader.Orientation = Orientation.Horizontal;
-                colheader.Children.Add(new Image() {Source = GetImage(rates[i].Item1)});
+                colheader.Children.Add(new Image() {Source = Helpers.Helpers.GetImage(rates[i].Item1)});
                 colheader.Children.Add(GetTextBlock($"{rates[i].Item1.Code}", Brushes.Gray));
 
                 var panRowHeader = GetPanel(rowheader);
@@ -166,16 +178,7 @@ namespace CurrencyLayerApp.ViewModels
             #endregion
         }
 
-        private ImageSource GetImage(ICurrency currency)
-        {
-            BitmapImage bimage = new BitmapImage();
-            bimage.BeginInit();
-            bimage.UriSource =
-                new Uri($"{CommonData.IconFolder}{new string(currency.Code.ToLower().Take(2).ToArray())}.png",
-                    UriKind.RelativeOrAbsolute);
-            bimage.EndInit();
-            return bimage;
-        }
+        
 
         private TextBlock GetTextBlock(string text, SolidColorBrush brush)
         {

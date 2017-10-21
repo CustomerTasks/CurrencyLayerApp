@@ -4,6 +4,18 @@
              xmlns:local="clr-namespace:CurrencyLayerApp"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="Border" x:Key="BaseBorder">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <!--<Style x:Key="BaseTextComponent">
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>-->
     </Application.Resources>
 </Application>

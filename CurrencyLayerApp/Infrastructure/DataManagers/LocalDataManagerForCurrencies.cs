@@ -5,13 +5,6 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
 {
     internal class LocalDataManagerForCurrencies : IDataManager<ApiCurrencyModel>
     {
-        private readonly CurrencyModel[] _currencyModels;
-
-        public LocalDataManagerForCurrencies(CurrencyModel[] currencyModels)
-        {
-            _currencyModels = currencyModels;
-        }
-
         public void Save(ApiCurrencyModel data)
         {
             

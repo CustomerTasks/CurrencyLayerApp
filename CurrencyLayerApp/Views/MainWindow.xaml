@@ -36,7 +36,7 @@
             <RowDefinition/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <TabControl Margin="8" SelectedIndex="0">
+        <TabControl Margin="8" SelectedIndex="0" Background="Transparent">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -62,6 +62,7 @@
                         <TextBlock Text="{x:Static resx:MainWindow.ExchangeData}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
+                <Frame Source="Pages/ExchangeData.xaml"/>
             </TabItem>
             <TabItem>
                 <TabItem.Header>

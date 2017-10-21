@@ -131,7 +131,13 @@ namespace CurrencyLayerApp.ViewModels
                         return;
                     }
                     _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
-                    _historicalData = _dataManager.Upload();
+                    var downloaded= _dataManager.Upload();
+                    if (downloaded != null)
+                    {
+                        IsCreated = false;
+                        _historicalData = downloaded;
+                    }
+
                     if (_historicalData == null || !_historicalData.Any())
                     {
                         _dataManager = new LocalDataManagerForHistoricalData(CurrencyModelFrom, CurrencyModelTo);
@@ -139,8 +145,10 @@ namespace CurrencyLayerApp.ViewModels
                     }
                     else
                     {
-                        Task.Run(() => _dataManager.Save(_historicalData));
+                        IsCreated = false;
                     }
+                    if (!IsCreated)
+                    {
                         var currencyModels = Parsers.GetStoredModels(true);
                         if (_currencyModelFrom == null || _currencyModelTo == null)
                         {
@@ -149,9 +157,10 @@ namespace CurrencyLayerApp.ViewModels
                             CurrencyModelTo =
                                 currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
                         }
-                    
-                    
-                    InitializeChart();
+                        InitializeChart();
+                        Task.Run(() => _dataManager.Save(_historicalData));
+                        IsCreated = true;
+                    }
                     Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
                 }
                 catch (Exception e)

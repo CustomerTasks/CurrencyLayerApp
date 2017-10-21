@@ -8,7 +8,8 @@
       xmlns:resx="clr-namespace:CurrencyLayerApp.Resources.Strings"
       xmlns:viewModels="clr-namespace:CurrencyLayerApp.ViewModels"
       mc:Ignorable="d"  d:DesignWidth="600"
-      Title="SettingPage">
+      Title="SettingPage"
+      >
     <Page.Resources>
         <Style TargetType="Button">
             <Setter Property="Width" Value="100"/>
@@ -26,7 +27,8 @@
     <Page.DataContext>
         <viewModels:SettingViewModel/>
     </Page.DataContext>
-    <Grid>
+    <Border Style="{StaticResource BaseBorder}">
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
@@ -56,7 +58,7 @@
 
         <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"  Header="{x:Static resx:SettingPage.CurrencySelector}">
             <StackPanel Orientation="Vertical">
-                <ListView Width="300" 
+                <ListView 
                           Height="300" 
                           ItemsSource="{Binding CurrencyModels}"
                           SelectionMode="Single"
@@ -64,15 +66,15 @@
                     <ListView.View>
                         <GridView>
                             <GridView.Columns>
-                                <GridViewColumn Header="#" Width="30">
+                                <GridViewColumn Header="#" >
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <CheckBox IsChecked="{Binding IsSelected}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Code" Width="50" DisplayMemberBinding="{Binding Code}"/>
-                                <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Code"  DisplayMemberBinding="{Binding Code}"/>
+                                <GridViewColumn Header="Name"  DisplayMemberBinding="{Binding Name}"/>
                             </GridView.Columns>
                         </GridView>
                     </ListView.View>
@@ -84,4 +86,5 @@
             <Button Content="{x:Static resx:SettingPage.SetDefaultButton}" Command="{Binding SetDefaultValues}"/>
         </StackPanel>
     </Grid>
+    </Border>
 </Page>

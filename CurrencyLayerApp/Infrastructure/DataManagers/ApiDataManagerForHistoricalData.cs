@@ -19,6 +19,8 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
 
         public void Save(Dictionary<DateTime, ApiCurrencyModel> data)
         {
+            if (data == null || !data.Any()) return;
+
             var uow = UnitOfWork.Instance;
             uow.DeleteHistoricalData();
             var currencies = uow.GetCurrencies();
@@ -32,7 +34,12 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
                         {
                             var cur = currencies.First(x => x.Code == quote.Key);
                             cur.HistoricalDatas
-                                .Add(new HistoricalData() { Date = historicalData.Key, Currency = cur, Rating = quote.Value });
+                                .Add(new HistoricalData()
+                                {
+                                    Date = historicalData.Key,
+                                    Currency = cur,
+                                    Rating = quote.Value
+                                });
                         }
                     }
                 }

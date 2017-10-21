@@ -142,9 +142,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Abstractions\IDownloader.cs" />
-    <Compile Include="Helpers\ClassConverters.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Helpers\Command.cs" />
     <Compile Include="Infrastructure\Converters\CurrentModelCollectionConverter.cs" />
+    <Compile Include="Infrastructure\Converters\FlagImageConverter.cs" />
     <Compile Include="Infrastructure\Converters\LogColorConverter.cs" />
     <Compile Include="Infrastructure\DataManagers\ApiDataManagerForCurrencies.cs" />
     <Compile Include="Infrastructure\DataManagers\ApiDataManagerForHistoricalData.cs" />
@@ -170,8 +171,10 @@
       <DependentUpon>SettingPage.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CurrentDataViewModel.cs" />
+    <Compile Include="Models\ExchangeModel.cs" />
     <Compile Include="ViewModels\HistoricalDataViewModel.cs" />
     <Compile Include="Infrastructure\DataManagers\LocalDataManagerForCurrencies.cs" />
+    <Compile Include="ViewModels\ExchangeViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

@@ -25,29 +25,34 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
-        <chartingToolkit:Chart LegendTitle="Pair:" 
+        <Border Style="{StaticResource BaseBorder}" HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <chartingToolkit:Chart LegendTitle="Pair:" 
                                Title="{Binding Description}">
-            <chartingToolkit:Chart.Series>
-                <chartingToolkit:AreaSeries Title="{Binding Description}"
+                <chartingToolkit:Chart.Series>
+                    <chartingToolkit:AreaSeries Title="{Binding Description}"
+                                                
                                             ItemsSource="{Binding Chart}"
                                              IndependentValueBinding="{Binding Key}"
                                             DependentValueBinding="{Binding Value}"
                                             Background="LightBlue"/>
-            </chartingToolkit:Chart.Series>
-        </chartingToolkit:Chart>
-        <DockPanel Grid.Column="1" HorizontalAlignment="Center">
-        <StackPanel Orientation="Vertical" 
+                </chartingToolkit:Chart.Series>
+            </chartingToolkit:Chart>
+        </Border>
+        <Border Grid.Column="1" Style="{StaticResource BaseBorder}"
+                Margin="0" Padding="8">
+            <StackPanel Orientation="Vertical" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
                     >
-            <TextBlock Text="Currency pair:" TextAlignment="Center"/>
-            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Currency pair:" />
+                <StackPanel Orientation="Horizontal">
                     <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" SelectedItem="{Binding CurrencyModelFrom , Converter= {StaticResource CurrentModelConverter}}"/>
-                <TextBlock Text=" / "/>
+                    <TextBlock Text=" / "/>
                     <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" SelectedItem="{Binding CurrencyModelTo , Converter= {StaticResource CurrentModelConverter}}"/>
                 </StackPanel>
-            
-        </StackPanel>
-        </DockPanel>
+
+            </StackPanel>
+        </Border>
     </Grid>
 </Page>
