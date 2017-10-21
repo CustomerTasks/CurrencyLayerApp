@@ -26,7 +26,14 @@ namespace CurrencyLayerApp.Infrastructure
 
         #region <Properties>
 
-        public string LastLog { get; set; }
+        public string ErrorLog
+        {
+            set { Logger.SetLogMessage(value,Logger.Color.Red); }
+        }
+        public string SuccessLog
+        {
+            set { Logger.SetLogMessage(value, Logger.Color.Green); }
+        }
 
         #endregion
 
@@ -42,11 +49,14 @@ namespace CurrencyLayerApp.Infrastructure
                 var request = new HttpRequestMessage(HttpMethod.Get, GetFormattedString(url));
                 var response = _client.SendAsync(request).Result;
                 var responseMessage = response.Content.ReadAsStringAsync().Result;
-                return CheckStatus(responseMessage) ? ApiCurrencyModel.JsonParse(responseMessage) : null;
+                var res = CheckStatus(responseMessage) ? ApiCurrencyModel.JsonParse(responseMessage) : null;
+                if (res != null)
+                    SuccessLog = "Connected to CurrentLayerServer";
+                return res;
             }
             catch
             {
-                LastLog = "Internet isn`t available. Please, check connection";
+                ErrorLog = "Internet isn`t available. Please, check connection";
                 return null;
             }
         }
@@ -78,7 +88,7 @@ namespace CurrencyLayerApp.Infrastructure
             }
             catch
             {
-                LastLog = "Internet isn`t available. Please, check connection";
+                ErrorLog = "Internet isn`t available. Please, check connection";
                 return null;
             }
         }
@@ -94,7 +104,7 @@ namespace CurrencyLayerApp.Infrastructure
             if (!res)
             {
                 var error = JsonConvert.DeserializeObject<Dictionary<string, string>>(message["error"].ToString());
-                LastLog = error["info"];
+                ErrorLog = error["info"];
             }
             return res;
         }

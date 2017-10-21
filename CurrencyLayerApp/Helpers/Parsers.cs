@@ -72,11 +72,11 @@ namespace CurrencyLayerApp.Helpers
                     var modelCurrency = model.Currency;
                     if (result.ContainsKey(date)){
                         result[date].Code = "USD";
-                        result[date].Quotes.Add(modelCurrency.Code, modelCurrency.Rating);
+                        result[date].Quotes.Add(modelCurrency.Code, model.Rating);
                     }
                     else
                     {
-                        result.Add(date,new ApiCurrencyModel(){Code = "USD",Quotes = {{ modelCurrency.Code, modelCurrency.Rating } }});
+                        result.Add(date,new ApiCurrencyModel(){Code = "USD",Quotes = {{ modelCurrency.Code, model.Rating } }});
                     }
                 }
                 return result;

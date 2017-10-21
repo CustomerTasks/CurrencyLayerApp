@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CurrencyLayerApp.Infrastructure.Global;
+using CurrencyLayerApp.ViewModels;
 
 namespace CurrencyLayerApp.Views
 {
@@ -23,6 +25,11 @@ namespace CurrencyLayerApp.Views
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            MainViewModel.Close();
         }
     }
 }

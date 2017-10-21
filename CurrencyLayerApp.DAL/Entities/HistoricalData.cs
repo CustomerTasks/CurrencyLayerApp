@@ -10,6 +10,8 @@ namespace CurrencyLayerApp.DAL.Entities
 
         [Required]
         public DateTime? Date { get; set; }
+        [Required]
+        public double Rating { get; set; }
 
         [Required]
         public virtual Currency Currency { get; set; }

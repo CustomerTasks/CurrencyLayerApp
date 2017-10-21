@@ -5,7 +5,7 @@ using CurrencyLayerApp.DAL.Repositories;
 
 namespace CurrencyLayerApp.DAL.Infrastructure
 {
-    public sealed class UnitOfWork
+    public sealed class UnitOfWork:IDisposable
     {
         private UnitOfWork()
         {
@@ -25,6 +25,7 @@ namespace CurrencyLayerApp.DAL.Infrastructure
         #region <Properties>
 
         public static UnitOfWork Instance { get; } = Lazy.Value;
+        public bool IsDisposed { get; private set; } = false;
 
         #endregion
 
@@ -112,5 +113,22 @@ namespace CurrencyLayerApp.DAL.Infrastructure
         }
 
         #endregion
+
+        private void ForceDispose()
+        {
+            if (IsDisposed)
+            {
+                IsDisposed = true;
+                _currencyRepository?.Dispose();
+                _historicalRepository?.Dispose();
+                GC.Collect();
+            }
+        }
+        public void Dispose()
+        {
+            if (IsDisposed)
+                return;
+            ForceDispose();
+        }
     }
 }

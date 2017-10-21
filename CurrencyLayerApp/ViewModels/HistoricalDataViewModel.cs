@@ -19,11 +19,11 @@ namespace CurrencyLayerApp.ViewModels
         {
             Thread = new Thread(DownloadData);
             Thread.Start();
-            _currencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels(true));
-            if (_currencyModels.Any())
+            CurrencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels(true));
+            if (CurrencyModels.Any())
             {
-                CurrencyModelFrom = _currencyModels.First();
-                CurrencyModelTo = _currencyModels.Count > 1 ? _currencyModels.Last() : _currencyModels.First();
+                CurrencyModelFrom = CurrencyModels.First();
+                CurrencyModelTo = CurrencyModels.Count > 1 ? CurrencyModels.Last() : CurrencyModels.First();
             }
 
         }
@@ -68,6 +68,7 @@ namespace CurrencyLayerApp.ViewModels
             set
             {
                 _currencyModelFrom = value;
+                InitializeChart();
                 OnPropertyChanged();
             }
         }
@@ -78,12 +79,22 @@ namespace CurrencyLayerApp.ViewModels
             set
             {
                 _currencyModelTo = value;
+                InitializeChart();
                 OnPropertyChanged();
             }
         }
 
         public Thread Thread { get; set; }
 
+        public ObservableCollection<CurrencyModel> CurrencyModels
+        {
+            get { return _currencyModels; }
+            set
+            {
+                _currencyModels = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -91,7 +102,7 @@ namespace CurrencyLayerApp.ViewModels
 
         private void InitializeChart()
         {
-            if (!_currencyModels.Any())
+            if (!CurrencyModels.Any() || CurrencyModelFrom==null || CurrencyModelTo==null || _historicalData==null)
                 return;
             Description = $"{_currencyModelFrom.Code}/{_currencyModelTo.Code}";
             _chart = new KeyValuePair<string, double>[_historicalData.Count];
@@ -108,35 +119,40 @@ namespace CurrencyLayerApp.ViewModels
         {
             while (true)
             {
+                if (Settings.Instance.IsFihished)
+                {
+                    Thread.Abort();
+                    break;
+                }
                 try
                 {
-                    if (!Settings.Instance.IsPrepared || !_currencyModels.Any())
+                    if (!Settings.Instance.IsPrepared || !CurrencyModels.Any())
                     {
-                        //_dataManager = new ApiDataManagerForHistoricalData();
                         return;
                     }
-                    _dataManager = new ApiDataManagerForHistoricalData(CurrencyModelFrom, CurrencyModelTo);
+                    _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
                     _historicalData = _dataManager.Upload();
                     if (_historicalData == null || !_historicalData.Any())
                     {
                         _dataManager = new LocalDataManagerForHistoricalData(CurrencyModelFrom, CurrencyModelTo);
                         _historicalData = _dataManager.Upload();
                     }
+                    else
                     {
+                        Task.Run(() => _dataManager.Save(_historicalData));
+                    }
                         var currencyModels = Parsers.GetStoredModels(true);
-                        _historicalData = _dataManager.Upload();
                         if (_currencyModelFrom == null || _currencyModelTo == null)
                         {
-                            _currencyModelFrom =
+                            CurrencyModelFrom =
                                 currencyModels.First(x => _historicalData.First().Value.Code == x.Code);
-                            _currencyModelTo =
+                            CurrencyModelTo =
                                 currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
                         }
-                        _historicalData = Parsers.GetStoredHistoryData();
-                    }
-                    Task.Run(() => _dataManager.Save(_historicalData));
+                    
+                    
                     InitializeChart();
-                    System.Threading.Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
+                    Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
                 }
                 catch (Exception e)
                 {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using CurrencyLayerApp.DAL.Infrastructure;
 
 namespace CurrencyLayerApp.Infrastructure.Global
 {
@@ -28,6 +29,7 @@ namespace CurrencyLayerApp.Infrastructure.Global
         public string ApiKey { get; set; }
         public int TimeBetweenCalls { get; set; }
         public bool IsPrepared => !string.IsNullOrEmpty(ApiKey);
+        public bool IsFihished { get; } = UnitOfWork.Instance.IsDisposed;
 
         #endregion
 

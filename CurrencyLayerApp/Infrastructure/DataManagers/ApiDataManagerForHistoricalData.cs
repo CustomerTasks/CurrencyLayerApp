@@ -10,13 +10,11 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
 {
     class ApiDataManagerForHistoricalData:IDataManager<Dictionary<DateTime, ApiCurrencyModel>>
     {
-        private readonly CurrencyModel _currencyModelFrom;
-        private readonly CurrencyModel _currencyModelTo;
+        private CurrencyModel[] _currencyModels;
 
-        public ApiDataManagerForHistoricalData(CurrencyModel currencyModelFrom, CurrencyModel currencyModelTo)
+        public ApiDataManagerForHistoricalData(params CurrencyModel[] models)
         {
-            _currencyModelFrom = currencyModelFrom;
-            _currencyModelTo = currencyModelTo;
+            _currencyModels = models;
         }
 
         public void Save(Dictionary<DateTime, ApiCurrencyModel> data)
@@ -33,9 +31,8 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
                         if (currencies.Any(x => x.Code == quote.Key))
                         {
                             var cur = currencies.First(x => x.Code == quote.Key);
-                            cur.Rating = quote.Value;
                             cur.HistoricalDatas
-                                .Add(new HistoricalData() { Date = historicalData.Key, Currency = cur });
+                                .Add(new HistoricalData() { Date = historicalData.Key, Currency = cur, Rating = quote.Value });
                         }
                     }
                 }
@@ -48,8 +45,8 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
             CurrencyLayerProvider provider =
                 new CurrencyLayerProvider(new HttpClient() { Timeout = TimeSpan.FromSeconds(10) });
             return 
-                provider.GetHistoricalCurrencyModel(new[] { _currencyModelFrom, _currencyModelTo }, DateTime.Now,
-                    14);
+                provider.GetHistoricalCurrencyModel(_currencyModels, DateTime.Now,
+                    7);
         }
     }
 }

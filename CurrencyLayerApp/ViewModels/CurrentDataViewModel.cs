@@ -47,6 +47,11 @@ namespace CurrencyLayerApp.ViewModels
         {
             while (true)
             {
+                if (Settings.Instance.IsFihished)
+                {
+                    Thread.Abort();
+                    break;
+                }
                 try
                 {
                     if (!Settings.Instance.IsPrepared || !_currencyModels.Any())
