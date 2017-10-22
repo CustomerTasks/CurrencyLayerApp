@@ -144,9 +144,12 @@
     <Compile Include="Abstractions\IDownloader.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Helpers\Command.cs" />
+    <Compile Include="Infrastructure\CurrencyLayerApplication.cs" />
     <Compile Include="Infrastructure\Converters\CurrentModelCollectionConverter.cs" />
     <Compile Include="Infrastructure\Converters\FlagImageConverter.cs" />
     <Compile Include="Infrastructure\Converters\LogColorConverter.cs" />
+    <Compile Include="Infrastructure\Converters\DoubleConverter.cs" />
+    <Compile Include="Infrastructure\Converters\SearchFieldConverter.cs" />
     <Compile Include="Infrastructure\DataManagers\ApiDataManagerForCurrencies.cs" />
     <Compile Include="Infrastructure\DataManagers\ApiDataManagerForHistoricalData.cs" />
     <Compile Include="Infrastructure\DataManagers\IDataManager.cs" />
@@ -160,6 +163,16 @@
     <Compile Include="Models\CurrencyModel.cs" />
     <Compile Include="Models\ApiCurrencyModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Resources\Strings\ExchangeData.Designer.cs">
+      <DependentUpon>ExchangeData.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Strings\HistoricalData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HistoricalData.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Strings\MainWindow.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -175,6 +188,7 @@
     <Compile Include="ViewModels\HistoricalDataViewModel.cs" />
     <Compile Include="Infrastructure\DataManagers\LocalDataManagerForCurrencies.cs" />
     <Compile Include="ViewModels\ExchangeViewModel.cs" />
+    <Compile Include="ViewModels\IInitializationManager.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
@@ -235,6 +249,14 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings\ExchangeData.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExchangeData.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Strings\HistoricalData.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>HistoricalData.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Strings\MainWindow.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -403,6 +425,7 @@
     <Resource Include="Resources\Pictures\Flags\il.png" />
     <Resource Include="Resources\Pictures\Flags\im.png" />
     <Resource Include="Resources\Pictures\Flags\in.png" />
+    <Resource Include="Resources\Pictures\find.png" />
     <Content Include="Resources\Pictures\Flags\index.html" />
     <Resource Include="Resources\Pictures\Flags\io.png" />
     <Resource Include="Resources\Pictures\Flags\iq.png" />

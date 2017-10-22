@@ -51,12 +51,12 @@ namespace CurrencyLayerApp.Infrastructure
                 var responseMessage = response.Content.ReadAsStringAsync().Result;
                 var res = CheckStatus(responseMessage) ? ApiCurrencyModel.JsonParse(responseMessage) : null;
                 if (res != null)
-                    SuccessLog = "Connected to CurrentLayerServer";
+                    SuccessLog = CommonData.MainLogMessages.ConnectedMessage.ToString();
                 return res;
             }
             catch
             {
-                ErrorLog = "Internet isn`t available. Please, check connection";
+                ErrorLog = CommonData.MainLogMessages.NotAvailableInternetMessage.ToString();
                 return null;
             }
         }
@@ -88,7 +88,7 @@ namespace CurrencyLayerApp.Infrastructure
             }
             catch
             {
-                ErrorLog = "Internet isn`t available. Please, check connection";
+                ErrorLog = CommonData.MainLogMessages.NotAvailableInternetMessage.ToString();
                 return null;
             }
         }

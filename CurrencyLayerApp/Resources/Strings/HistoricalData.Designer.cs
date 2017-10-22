@@ -22,14 +22,14 @@ namespace CurrencyLayerApp.Resources.Strings {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class SettingPage {
+    public class HistoricalData {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SettingPage() {
+        internal HistoricalData() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace CurrencyLayerApp.Resources.Strings {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CurrencyLayerApp.Resources.Strings.SettingPage", typeof(SettingPage).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CurrencyLayerApp.Resources.Strings.HistoricalData", typeof(HistoricalData).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,74 +61,20 @@ namespace CurrencyLayerApp.Resources.Strings {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на API key:.
+        ///   Ищет локализованную строку, похожую на Currency pair:.
         /// </summary>
-        public static string ApiKey {
+        public static string CurrencyPair {
             get {
-                return ResourceManager.GetString("ApiKey", resourceCulture);
+                return ResourceManager.GetString("CurrencyPair", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Time between API calls (seconds):.
+        ///   Ищет локализованную строку, похожую на Pairs:.
         /// </summary>
-        public static string ApiTime {
+        public static string LegendTitle {
             get {
-                return ResourceManager.GetString("ApiTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Maximum selected currencies - 7 (Auto taking first 7 currencies).
-        /// </summary>
-        public static string Count {
-            get {
-                return ResourceManager.GetString("Count", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Selected currencies:.
-        /// </summary>
-        public static string CurrencySelector {
-            get {
-                return ResourceManager.GetString("CurrencySelector", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Find code by full name:.
-        /// </summary>
-        public static string FindByCurrencyName {
-            get {
-                return ResourceManager.GetString("FindByCurrencyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Save.
-        /// </summary>
-        public static string SaveButton {
-            get {
-                return ResourceManager.GetString("SaveButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, this application will restart..
-        /// </summary>
-        public static string SelectCurrenciesWarn {
-            get {
-                return ResourceManager.GetString("SelectCurrenciesWarn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на Set Default.
-        /// </summary>
-        public static string SetDefaultButton {
-            get {
-                return ResourceManager.GetString("SetDefaultButton", resourceCulture);
+                return ResourceManager.GetString("LegendTitle", resourceCulture);
             }
         }
     }

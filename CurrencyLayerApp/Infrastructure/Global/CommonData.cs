@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Linq;
+using CurrencyLayerApp.Helpers;
+using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.Infrastructure.Global
 {
     public static class CommonData
     {
+
         #region Local Paths
 
         public static string MainDirectory { get; } = Environment.CurrentDirectory.Replace(@"bin\Debug", "");
@@ -23,5 +27,14 @@ namespace CurrencyLayerApp.Infrastructure.Global
         public static readonly string CurrentLayerApiHistoricalData = "historical";
 
         #endregion
+
+        public static class MainLogMessages
+        {
+            public static readonly string NotAvailableInternetMessage =
+                "Internet isn`t available. Please, check connection";
+
+            public static readonly string ConnectedMessage = "Connected to CurrentLayerServer";
+            public static readonly string StartupMessage = "Application isn`t prepared for working";
+        }
     }
 }

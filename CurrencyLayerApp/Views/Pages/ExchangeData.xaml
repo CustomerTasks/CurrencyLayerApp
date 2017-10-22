@@ -10,7 +10,8 @@
       xmlns:converters="clr-namespace:CurrencyLayerApp.Infrastructure.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="ExchangeData">
+      Title="ExchangeData"
+      IsEnabled="{Binding IsEnabled}">
     <Page.DataContext>
         <viewModels:ExchangeViewModel/>
     </Page.DataContext>
@@ -18,8 +19,11 @@
         <converters:CurrentModelCollectionConverter x:Key="CurrencyConverterCollection" />
         <converters:CurrentModelConverter x:Key="CurrentModelConverter"/>
         <converters:FlagImageConverter x:Key="ImageConverter"/>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock}"/>
+        <Style TargetType="GroupBox" BasedOn="{StaticResource GroupBox}"/>
+        <Style TargetType="xctk:DoubleUpDown" BasedOn="{StaticResource DoubleUpDown}"/>
     </Page.Resources>
-    <Border Style="{StaticResource BaseBorder}">
+    <Border Style="{StaticResource Border}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -27,18 +31,17 @@
             </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center"
                             Margin="12">
-                    <TextBlock Text="From" Margin="4"/>
+                    <TextBlock Text="{x:Static resx:ExchangeData.From}" Margin="4"/>
                     <StackPanel Orientation="Horizontal">
                         <xctk:DoubleUpDown Minimum="0"  Increment="1" Margin="4" Value="{Binding CurrencyValue}" Width="100"/>
-                        <ComboBox 
-                    Margin="4" 
+                    <ComboBox Style="{StaticResource ComboBox}"
                     ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" 
                     SelectedItem="{Binding CurrencyModel , Converter= {StaticResource CurrentModelConverter}}"/>
                     </StackPanel>
                 </StackPanel>
 
             <GroupBox  Grid.Column="1" Margin="12"
-                Header="{x:Static resx:SettingPage.CurrencySelector}">
+                Header="{x:Static resx:ExchangeData.ConvertedCurrencies}" IsEnabled="False">
                     <ListView ItemsSource="{Binding ExchangeModels, Mode=OneWay}">
                         <ListView.View>
                             <GridView >

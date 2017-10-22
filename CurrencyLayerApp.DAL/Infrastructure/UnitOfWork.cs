@@ -7,11 +7,12 @@ namespace CurrencyLayerApp.DAL.Infrastructure
 {
     public sealed class UnitOfWork:IDisposable
     {
+        static CurrencyLayerContext _context;
         private UnitOfWork()
         {
-            var context = new CurrencyLayerContext();
-            _currencyRepository = new CurrencyRepository(context);
-            _historicalRepository = new HistoricalDataRepository(context);
+            _context = new CurrencyLayerContext();
+            _currencyRepository = new CurrencyRepository(_context);
+            _historicalRepository = new HistoricalDataRepository(_context);
         }
 
         #region <Fields>
@@ -100,27 +101,27 @@ namespace CurrencyLayerApp.DAL.Infrastructure
         public bool Any(Type type)
         {
             if (type == typeof(Currency))
-                return _currencyRepository.NotEmpty();
+                return _currencyRepository.IsNotEmpty();
             if (type == typeof(HistoricalData))
-                return _historicalRepository.NotEmpty();
+                return _historicalRepository.IsNotEmpty();
             return false;
         }
 
         public void Save()
         {
-            _currencyRepository.Save();
-            _historicalRepository.Save();
+            _context.SaveChanges();
         }
 
         #endregion
 
         private void ForceDispose()
         {
-            if (IsDisposed)
+            if (!IsDisposed)
             {
                 IsDisposed = true;
-                _currencyRepository?.Dispose();
-                _historicalRepository?.Dispose();
+                _context.Database.Connection.Close();
+                //_context.Dispose();
+                _context = null;
                 GC.Collect();
             }
         }

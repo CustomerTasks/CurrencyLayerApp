@@ -7,10 +7,13 @@
       xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns:resx="clr-namespace:CurrencyLayerApp.Resources.Strings"
       xmlns:viewModels="clr-namespace:CurrencyLayerApp.ViewModels"
+      xmlns:converters="clr-namespace:CurrencyLayerApp.Infrastructure.Converters"
       mc:Ignorable="d"  d:DesignWidth="600"
       Title="SettingPage"
       >
     <Page.Resources>
+        <Style TargetType="GroupBox" BasedOn="{StaticResource GroupBox}"/>
+        <Style TargetType="toolkit:DoubleUpDown" BasedOn="{StaticResource DoubleUpDown}"/>
         <Style TargetType="Button">
             <Setter Property="Width" Value="100"/>
             <Setter Property="Padding" Value="4"/>
@@ -18,16 +21,16 @@
         </Style>
         <Style TargetType="Grid" x:Key="CustomGrid">
             <Setter Property="Margin" Value="15"/>
-            <Setter Property="Height" Value="30"/>
         </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource TextBox}"/>
+        <Style TargetType="toolkit:IntegerUpDown" BasedOn="{StaticResource IntegerUpDown}"/>
+        <converters:SearchFieldConverter x:Key="FieldConverter"/>
     </Page.Resources>
     <Page.DataContext>
         <viewModels:SettingViewModel/>
     </Page.DataContext>
-    <Border Style="{StaticResource BaseBorder}">
+    <Border Style="{StaticResource Border}">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -38,31 +41,40 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Grid Style="{StaticResource CustomGrid}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{x:Static resx:SettingPage.ApiKey}" Margin="0,0,4,0"/>
-            <TextBox Grid.Column="1" Width="256" VerticalContentAlignment="Center"
-                     Text="{Binding ApiKey}"/>
-        </Grid>
-        <Grid Grid.Row="1" Style="{StaticResource CustomGrid}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{x:Static resx:SettingPage.ApiTime}" Margin="0,0,4,0"/>
-            <toolkit:IntegerUpDown Grid.Column="1" Minimum="0" Value="{Binding Time}"/>
-        </Grid>
+            <StackPanel Orientation="Vertical" Grid.RowSpan="2" VerticalAlignment="Center">
+                <Grid Style="{StaticResource CustomGrid}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{x:Static resx:SettingPage.ApiKey}"/>
+                    <TextBox Grid.Column="1" Width="256" VerticalContentAlignment="Center"
+                             Text="{Binding ApiKey}"/>
+                </Grid>
+                <Grid Style="{StaticResource CustomGrid}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{x:Static resx:SettingPage.ApiTime}"/>
+                    <toolkit:IntegerUpDown Grid.Column="1" Minimum="0" Value="{Binding Time}"/>
+                </Grid>
+            </StackPanel>
 
         <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"  Header="{x:Static resx:SettingPage.CurrencySelector}">
-            <StackPanel Orientation="Vertical">
-                <ListView 
-                          Height="300" 
-                          ItemsSource="{Binding CurrencyModels}"
-                          SelectionMode="Single"
-                          >
+            <StackPanel Orientation="Vertical" >
+                    <Grid VerticalAlignment="Center" Margin="4" Style="{StaticResource CustomGrid}">
+                        <Grid.ColumnDefinitions><ColumnDefinition/>
+                        <ColumnDefinition/></Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Static resx:SettingPage.FindByCurrencyName}"/>
+                        <TextBox Grid.Column="1" Text="{Binding SearchField, Converter={StaticResource FieldConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                                 VerticalContentAlignment="Center"/>
+                    </Grid>
+                    <ListView  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                               ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          Height="200"
+                          ItemsSource="{Binding FilteredModels}"
+                          SelectionMode="Single">
                     <ListView.View>
                         <GridView>
                             <GridView.Columns>
@@ -73,18 +85,22 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Code"  DisplayMemberBinding="{Binding Code}"/>
+                                <GridViewColumn Header="Code"  DisplayMemberBinding="{Binding Code}" Width="50"/>
                                 <GridViewColumn Header="Name"  DisplayMemberBinding="{Binding Name}"/>
                             </GridView.Columns>
                         </GridView>
                     </ListView.View>
                 </ListView>
-            </StackPanel>
+                </StackPanel>
         </GroupBox>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="2">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="2">
+            <TextBlock Foreground="Blue" Text="{x:Static resx:SettingPage.Count}" FontSize="10"/>
+                <TextBlock Foreground="Red" Text="{x:Static resx:SettingPage.SelectCurrenciesWarn}" FontSize="10" TextWrapping="Wrap" Width="400"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <Button Content="{x:Static resx:SettingPage.SaveButton}" Command="{Binding SaveChanges}"/>
             <Button Content="{x:Static resx:SettingPage.SetDefaultButton}" Command="{Binding SetDefaultValues}"/>
         </StackPanel>
+            </StackPanel>
     </Grid>
     </Border>
 </Page>

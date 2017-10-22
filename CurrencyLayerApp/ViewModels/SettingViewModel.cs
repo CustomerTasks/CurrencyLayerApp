@@ -1,9 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CurrencyLayerApp.DAL.Infrastructure;
 using CurrencyLayerApp.Helpers;
+using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
 
@@ -13,7 +16,8 @@ namespace CurrencyLayerApp.ViewModels
     {
         public SettingViewModel()
         {
-            CurrencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels());
+            _currencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels());
+            SearchField = string.Empty;
             InitCheckBoxs();
             SaveChanges = new Command(() => Task.Run(() => Save()));
             SetDefaultValues = new Command(SetDefault);
@@ -24,10 +28,13 @@ namespace CurrencyLayerApp.ViewModels
         #region <Fields>
 
         private ObservableCollection<CurrencyModel> _currencyModels;
+        private ObservableCollection<CurrencyModel> _filteredModels;
         private ICommand _savechanges;
         private string _apiKey;
         private int _time = 10;
         private ICommand _setDefaultValues;
+        private string _searchField;
+        private const int _maxCurrencies = 7;
 
         #endregion
 
@@ -40,6 +47,7 @@ namespace CurrencyLayerApp.ViewModels
             {
                 _currencyModels = value;
                 OnPropertyChanged();
+                FilterSearchedResult();
             }
         }
 
@@ -85,22 +93,54 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
+        public string SearchField
+        {
+            get { return _searchField; }
+            set
+            {
+                _searchField = value;
+                OnPropertyChanged();
+                FilterSearchedResult();
+            }
+        }
+
+        public ObservableCollection<CurrencyModel> FilteredModels
+        {
+            get { return _filteredModels; }
+            set
+            {
+                _filteredModels = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region <Methods>
 
         private void Save()
         {
-            var uow = UnitOfWork.Instance;
-            uow.DeleteCurrencies();
-            foreach (var model in CurrencyModels)
+            var currencyModels = CurrencyModels.Where(x => x.IsSelected);
+            var count = currencyModels.Count();
+            if (count > _maxCurrencies)
             {
-                if (model.IsSelected)
-                {
-                    uow.Add(model.ToCurrency());
-                }
+                currencyModels = currencyModels.Take(_maxCurrencies).ToArray();
             }
-            uow.Save();
+            var uow = UnitOfWork.Instance;
+
+            lock (uow)
+            {
+                uow.DeleteCurrencies();
+                foreach (var model in currencyModels)
+                {
+                    if (model.IsSelected)
+                    {
+                        uow.Add(model.ToCurrency());
+                    }
+                }
+                uow.Save();
+            }
+            CurrencyLayerApplication.RefreshModels();
             Settings.Instance.Save();
         }
 
@@ -117,13 +157,35 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
+        private void FilterSearchedResult()
+        {
+            if (string.IsNullOrEmpty(_searchField))
+            {
+                var list = new ObservableCollection<CurrencyModel>(_currencyModels.Where(x=>x.IsSelected));
+                foreach (var model in _currencyModels)
+                {
+                    if (!list.Any(x => x.Code == model.Code))
+                    {
+                        list.Add(model);
+                    }
+                }
+                FilteredModels = list;
+            }
+            else
+            {
+                FilteredModels =
+                    new ObservableCollection<CurrencyModel>(_currencyModels.Where(x => x.Name.ToLower().Contains(_searchField) || x.Code.ToLower().Contains(_searchField)));
+            }
+        }
+
         private void InitCheckBoxs()
         {
-            var list = Parsers.GetStoredModels(true);
+            var list = CurrencyLayerApplication.CurrencyModels;
             foreach (var model in list)
             {
                 CurrencyModels.First(x => x.Code == model.Code).IsSelected = model.IsSelected;
             }
+            FilterSearchedResult();
         }
 
         #endregion

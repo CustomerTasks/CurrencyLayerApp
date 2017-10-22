@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using CurrencyLayerApp.Infrastructure;
+﻿using System.Windows;
+using CurrencyLayerApp.DAL.Infrastructure;
 using CurrencyLayerApp.Infrastructure.Global;
 
 namespace CurrencyLayerApp
@@ -15,6 +9,11 @@ namespace CurrencyLayerApp
     /// </summary>
     public partial class App : Application
     {
-       
+        protected override void OnExit(ExitEventArgs e)
+        {
+            UnitOfWork.Instance.Dispose();
+            Settings.Instance.IsFihished = true;
+            base.OnExit(e);
+        }
     }
 }

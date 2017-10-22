@@ -24,6 +24,7 @@ namespace CurrencyLayerApp.ViewModels
         private string _logMessage;
         private Logger.Color _color;
         private bool _isOnline;
+        private int _index;
 
         #endregion
 
@@ -51,22 +52,31 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
-       
+        public int Index
+        {
+            get { return _index; }
+            set
+            {
+                _index = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
         #region <Methods>
-
-        public static void Close()
-        {
-            UnitOfWork.Instance.Dispose();
-            GC.Collect();
-        }
+        
 
         public void DownloadData()
         {
             while (true)
             {
+                if (Settings.Instance.IsFihished)
+                {
+                    Thread.Abort();
+                    break;
+                }
+                Index = Settings.Instance.IsConfigured ? Index : 3;
                 var log = Logger.GetLogMessage();
                 if (log != null)
                 {

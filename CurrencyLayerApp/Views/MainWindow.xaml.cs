@@ -26,10 +26,5 @@ namespace CurrencyLayerApp.Views
         {
             InitializeComponent();
         }
-
-        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
-        {
-            MainViewModel.Close();
-        }
     }
 }

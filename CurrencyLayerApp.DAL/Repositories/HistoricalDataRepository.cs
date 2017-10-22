@@ -8,12 +8,10 @@ namespace CurrencyLayerApp.DAL.Repositories
 {
     internal class HistoricalDataRepository : IRepository<HistoricalData>
     {
-        private readonly CurrencyLayerContext _context;
 
         public HistoricalDataRepository(CurrencyLayerContext context)
         {
-            _context = context;
-            Set = _context.HistoricalDatas;
+            Set = context.HistoricalDatas;
         }
 
         public DbSet<HistoricalData> Set { get; set; }
@@ -46,18 +44,9 @@ namespace CurrencyLayerApp.DAL.Repositories
         {
             Set.RemoveRange(Set);
         }
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-        public bool NotEmpty()
+        public bool IsNotEmpty()
         {
             return Set.Any();
-        }
-
-        public void Dispose()
-        {
-            _context?.Dispose();
         }
     }
 }

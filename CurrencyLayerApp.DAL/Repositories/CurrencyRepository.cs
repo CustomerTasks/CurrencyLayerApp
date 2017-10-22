@@ -8,12 +8,10 @@ namespace CurrencyLayerApp.DAL.Repositories
 {
     internal class CurrencyRepository : IRepository<Currency>
     {
-        private readonly CurrencyLayerContext _context;
 
         public CurrencyRepository(CurrencyLayerContext context)
         {
-            _context = context;
-            Set = _context.Currencies;
+            Set = context.Currencies;
         }
 
         public DbSet<Currency> Set { get; set; }
@@ -46,18 +44,10 @@ namespace CurrencyLayerApp.DAL.Repositories
         {
             Set.RemoveRange(Set);
         }
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-        public bool NotEmpty()
+        public bool IsNotEmpty()
         {
             return Set.Any();
         }
 
-        public void Dispose()
-        {
-            _context?.Dispose();
-        }
     }
 }

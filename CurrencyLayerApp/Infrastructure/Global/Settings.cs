@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using CurrencyLayerApp.DAL.Infrastructure;
 
 namespace CurrencyLayerApp.Infrastructure.Global
@@ -28,8 +29,8 @@ namespace CurrencyLayerApp.Infrastructure.Global
         public static Settings Instance { get; } = Lazy.Value;
         public string ApiKey { get; set; }
         public int TimeBetweenCalls { get; set; }
-        public bool IsPrepared => !string.IsNullOrEmpty(ApiKey);
-        public bool IsFihished { get; } = UnitOfWork.Instance.IsDisposed;
+        public bool IsFihished { get; set; }
+        public bool IsConfigured { get; set; } = true;
 
         #endregion
 
@@ -40,7 +41,6 @@ namespace CurrencyLayerApp.Infrastructure.Global
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             using (FileStream stream = new FileStream(CommonData.SettingsFile, FileMode.OpenOrCreate))
             {
-
                 binaryFormatter.Serialize(stream, this);
             }
         }

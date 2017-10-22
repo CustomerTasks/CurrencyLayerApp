@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls.DataVisualization.Charting;
+using System.Windows.Media;
 using CurrencyLayerApp.Abstractions;
-using CurrencyLayerApp.Helpers;
 using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.DataManagers;
 using CurrencyLayerApp.Infrastructure.Global;
@@ -13,19 +15,15 @@ using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    class HistoricalDataViewModel : ViewModelBase, IDownloader
+    class HistoricalDataViewModel : ViewModelBase, IDownloader,IInitializationManager
     {
+        private readonly AreaSeries _areaSerie;
+
         public HistoricalDataViewModel()
         {
             Thread = new Thread(DownloadData);
             Thread.Start();
-            CurrencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels(true));
-            if (CurrencyModels.Any())
-            {
-                CurrencyModelFrom = CurrencyModels.First();
-                CurrencyModelTo = CurrencyModels.Count > 1 ? CurrencyModels.Last() : CurrencyModels.First();
-            }
-
+            
         }
 
         #region <Fields>
@@ -37,6 +35,14 @@ namespace CurrencyLayerApp.ViewModels
         private CurrencyModel _currencyModelTo;
         private Dictionary<DateTime, ApiCurrencyModel> _historicalData;
         private IDataManager<Dictionary<DateTime, ApiCurrencyModel>> _dataManager;
+        private bool _isEnabled;
+        private double _max;
+        private double min;
+
+        public HistoricalDataViewModel(AreaSeries areaSerie):this()
+        {
+            _areaSerie = areaSerie;
+        }
 
         #endregion
 
@@ -83,7 +89,6 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public Thread Thread { get; set; }
 
         public ObservableCollection<CurrencyModel> CurrencyModels
@@ -95,11 +100,45 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
         #region <Methods> 
-
+        public void Initialize()
+        {
+            if (_currencyModels == null || !_currencyModels.Any())
+            {
+                if (_currencyModels != null && _currencyModels.Any())
+                {
+                    var checkingModels = new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
+                    if (_currencyModels.Count == checkingModels.Count)
+                    {
+                        int count = 0;
+                        for (var i = 0; i < checkingModels.Count; i++)
+                        {
+                            if (_currencyModels[i].Code == checkingModels[i].Code)
+                                count++;
+                        }
+                        if (count != checkingModels.Count)
+                        {
+                            InitializeModels();
+                        }
+                        return;
+                    }
+                }
+                InitializeModels();
+            }
+            InitializeModels();
+        }
         private void InitializeChart()
         {
             if (!CurrencyModels.Any() || CurrencyModelFrom==null || CurrencyModelTo==null || _historicalData==null)
@@ -109,10 +148,21 @@ namespace CurrencyLayerApp.ViewModels
             int i = _chart.Length - 1;
             foreach (var model in _historicalData)
             {
-                _chart[i--] = new KeyValuePair<string, double>(model.Key.ToString("yyyy/MM/dd"),
+                _chart[i--] = new KeyValuePair<string, double>(model.Key.ToString("dd/MM/yyyy"),
                     model.Value.Quotes[_currencyModelFrom.Code] / model.Value.Quotes[_currencyModelTo.Code]);
             }
+            /*_areaSerie.Background = new SolidColorBrush(Color.FromArgb(172, 32, 178, 170));
+            var linearAxis = ((LinearAxis) _areaSerie.DependentRangeAxis);
+            linearAxis.Minimum = _chart.Min(x => x.Value);
+            linearAxis.Maximum = _chart.Max(x => x.Value);*/
             Chart = _chart;
+        }
+        private void InitializeModels()
+        {
+            CurrencyModels =
+                new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
+            
+            IsEnabled = true;
         }
 
         public void DownloadData()
@@ -126,47 +176,55 @@ namespace CurrencyLayerApp.ViewModels
                 }
                 try
                 {
-                    if (!Settings.Instance.IsPrepared || !CurrencyModels.Any())
-                    {
-                        return;
-                    }
-                    _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
-                    var downloaded= _dataManager.Upload();
-                    if (downloaded != null)
-                    {
-                        IsCreated = false;
-                        _historicalData = downloaded;
-                    }
-
-                    if (_historicalData == null || !_historicalData.Any())
-                    {
-                        _dataManager = new LocalDataManagerForHistoricalData(CurrencyModelFrom, CurrencyModelTo);
-                        _historicalData = _dataManager.Upload();
-                    }
-                    else
-                    {
-                        IsCreated = false;
-                    }
+                    if (!Settings.Instance.IsConfigured) return;
+                    Initialize();
+                    DownloadByManagers();
                     if (!IsCreated)
                     {
-                        var currencyModels = Parsers.GetStoredModels(true);
-                        if (_currencyModelFrom == null || _currencyModelTo == null)
-                        {
-                            CurrencyModelFrom =
-                                currencyModels.First(x => _historicalData.First().Value.Code == x.Code);
-                            CurrencyModelTo =
-                                currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
-                        }
+                        Calculation();
                         InitializeChart();
                         Task.Run(() => _dataManager.Save(_historicalData));
                         IsCreated = true;
                     }
-                    Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
+                    CurrencyLayerApplication.ThreadSleep();
                 }
                 catch (Exception e)
                 {
                     //ignored
                 }
+            }
+        }
+
+        private void Calculation()
+        {
+            var currencyModels = CurrencyLayerApplication.CurrencyModels;
+            if (_currencyModelFrom == null || _currencyModelTo == null)
+            {
+                CurrencyModelFrom =
+                    currencyModels.First(x => _historicalData.First().Value.Code == x.Code);
+                CurrencyModelTo =
+                    currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
+            }
+        }
+
+        private void DownloadByManagers()
+        {
+            _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
+            var downloaded = _dataManager.Upload();
+            if (downloaded != null)
+            {
+                IsCreated = false;
+                _historicalData = downloaded;
+            }
+
+            if (_historicalData == null || !_historicalData.Any())
+            {
+                _dataManager = new LocalDataManagerForHistoricalData();
+                _historicalData = _dataManager.Upload();
+            }
+            else
+            {
+                IsCreated = false;
             }
         }
 
@@ -177,32 +235,6 @@ namespace CurrencyLayerApp.ViewModels
 
 
         #endregion
-        
-        /*private void Save()
-        {
-            Task.Run(() =>
-            {
-                var uow = UnitOfWork.Instance;
-                uow.DeleteHistoricalData();
-                var currencies = uow.GetCurrencies();
-                if (currencies.Any() && _historicalData.Any())
-                {
-                    foreach (var historicalData in _historicalData)
-                    {
-                        foreach (var quote in historicalData.Value.Quotes)
-                        {
-                            if (currencies.Any(x => x.Code == quote.Key))
-                            {
-                                var cur = currencies.First(x => x.Code == quote.Key);
-                                cur.Rating = quote.Value;
-                                cur.HistoricalDatas
-                                    .Add(new HistoricalData() {Date = historicalData.Key, Currency = cur });
-                            }
-                        }
-                    }
-                }
-                uow.Save();
-            });
-        }*/
+
     }
 }

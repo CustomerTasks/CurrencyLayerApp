@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
 using CurrencyLayerApp.DAL.Entities;
 using CurrencyLayerApp.DAL.Infrastructure;
-using CurrencyLayerApp.Helpers;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.Infrastructure.DataManagers

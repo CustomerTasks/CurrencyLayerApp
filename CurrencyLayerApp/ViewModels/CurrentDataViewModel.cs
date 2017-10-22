@@ -6,23 +6,21 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using CurrencyLayerApp.Abstractions;
 using CurrencyLayerApp.Helpers;
+using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.DataManagers;
 using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    class CurrentDataViewModel : ViewModelBase, IDownloader
+    class CurrentDataViewModel : ViewModelBase, IDownloader, IInitializationManager
     {
         public CurrentDataViewModel(Grid grid)
         {
             _grid = grid;
             Thread = new Thread(DownloadData);
-            _currencyModels =
-                new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels(true));
             Thread.Start();
         }
 
@@ -32,16 +30,56 @@ namespace CurrencyLayerApp.ViewModels
         private double[,] _rates;
         private readonly Grid _grid;
         private IDataManager<ApiCurrencyModel> _dataManager;
+        private bool _isEnabled;
+        ApiCurrencyModel _liveCurrencyModel;
 
         #endregion
 
         #region <Properties>
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Thread Thread { get; set; }
 
         #endregion
 
         #region <Methods>
+
+        public void Initialize()
+        {
+            if (_currencyModels != null && _currencyModels.Any())
+            {
+                var checkingModels = new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
+                if (_currencyModels.Count == checkingModels.Count)
+                {
+                    int count = 0;
+                    for (var i = 0; i < checkingModels.Count; i++)
+                    {
+                        if (_currencyModels[i].Code == checkingModels[i].Code)
+                            count++;
+                    }
+                    if (count != checkingModels.Count)
+                    {
+                        InitializeModels();
+                    }
+                    return;
+                }
+            }
+            InitializeModels();
+        }
+
+        private void InitializeModels()
+        {
+            _currencyModels = new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
+        }
 
         public void DownloadData()
         {
@@ -52,52 +90,56 @@ namespace CurrencyLayerApp.ViewModels
                     Thread.Abort();
                     break;
                 }
-                try
+                if (!Settings.Instance.IsConfigured)
+                    return;
+                Initialize();
+                DownloadByManagers();
+                if (!IsCreated)
                 {
-                    if (!Settings.Instance.IsPrepared || !_currencyModels.Any())
-                        return;
-                    ApiCurrencyModel liveCurrencyModel=null;
-                        _dataManager = new ApiDataManagerForCurrencies(_currencyModels.ToArray());
-                    var downloaded = _dataManager.Upload();
-                    if (downloaded != null)
-                    {
-                        IsCreated = false;
-                        liveCurrencyModel = downloaded;
-                    }
-                    if (liveCurrencyModel == null)
-                    {
-                        _dataManager = new LocalDataManagerForCurrencies();
-                        liveCurrencyModel = _dataManager.Upload();
-                    }
-                    else
-                    {
-                        IsCreated = false;
-                    }
-                    if (!IsCreated)
-                    {
-                        var dictionary = liveCurrencyModel.Quotes;
-                        var size = dictionary.Count;
-                        _rates = new double[size, size];
-                        int i = 0, j;
-                        foreach (var code1 in dictionary)
-                        {
-                            j = 0;
-                            foreach (var code2 in dictionary)
-                            {
-                                _rates[i, j++] = code2.Value / code1.Value;
-                            }
-                            i++;
-                        }
-                        Task.Run(() => _dataManager.Save(liveCurrencyModel));
-                        _grid.Dispatcher.BeginInvoke((Action) InitializeData);
-                        IsCreated = true;
-                    }
-                    Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
+                    Calculation();
+                    Task.Run(() => _dataManager.Save(_liveCurrencyModel));
+                    _grid.Dispatcher.BeginInvoke((Action) InitializeGrid);
+                    IsCreated = true;
                 }
-                catch (Exception e)
+                CurrencyLayerApplication.ThreadSleep();
+            }
+        }
+
+
+        private void DownloadByManagers()
+        {
+            _dataManager = new ApiDataManagerForCurrencies(_currencyModels.ToArray());
+            var downloaded = _dataManager.Upload();
+            if (downloaded != null)
+            {
+                IsCreated = false;
+                _liveCurrencyModel = downloaded;
+            }
+            if (_liveCurrencyModel == null)
+            {
+                _dataManager = new LocalDataManagerForCurrencies();
+                _liveCurrencyModel = _dataManager.Upload();
+            }
+            else
+            {
+                IsCreated = false;
+            }
+        }
+
+        private void Calculation()
+        {
+            var dictionary = _liveCurrencyModel.Quotes;
+            var size = dictionary.Count;
+            _rates = new double[size, size];
+            int i = 0, j;
+            foreach (var code1 in dictionary)
+            {
+                j = 0;
+                foreach (var code2 in dictionary)
                 {
-                    //ignored
+                    _rates[i, j++] = code2.Value / (code1.Value == 0 ? 1 : code1.Value);
                 }
+                i++;
             }
         }
 
@@ -105,7 +147,7 @@ namespace CurrencyLayerApp.ViewModels
 
         #region <Additional>
 
-        private void InitializeData()
+        private void InitializeGrid()
         {
             if (Settings.Instance.ApiKey == null)
                 return;
@@ -154,7 +196,6 @@ namespace CurrencyLayerApp.ViewModels
                 _grid.Children.Add(panRowHeader);
 
                 #endregion
-
 
                 #region Cells
 
@@ -210,5 +251,7 @@ namespace CurrencyLayerApp.ViewModels
         }
 
         #endregion
+
+       
     }
 }

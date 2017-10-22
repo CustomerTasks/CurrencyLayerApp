@@ -41,7 +41,7 @@ namespace CurrencyLayerApp.Helpers
             var uow = UnitOfWork.Instance;
             lock (uow)
             {
-                if (uow.Any(typeof(Currency)))
+                if (selected && uow.Any(typeof(Currency)))
                 {
                     var models = uow.GetCurrencies();
                     foreach (var model in models)

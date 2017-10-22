@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CurrencyLayerApp.ViewModels;
 
 namespace CurrencyLayerApp.Views.Pages
 {
@@ -23,6 +24,7 @@ namespace CurrencyLayerApp.Views.Pages
         public HistoricalData()
         {
             InitializeComponent();
+            DataContext = new HistoricalDataViewModel(AreaSerie);
         }
     }
 }
