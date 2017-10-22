@@ -7,23 +7,15 @@ using CurrencyLayerApp.Abstractions;
 
 namespace CurrencyLayerApp.Models
 {
-    public class CurrencyModel: ICurrency
+    public class CurrencyModel: ExchangeModel
     {
         /// <summary>
-        /// Full name of Code
+        /// Full name of Currency.
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Is selected currency in Setting Tab.
+        /// Selected currency in Setting Tab.
         /// </summary>
         public bool IsSelected { get; set; } = false;
-        /// <summary>
-        /// Code
-        /// </summary>
-        public string Code { get; set; }
-        /// <summary>
-        /// Value
-        /// </summary>
-        public double Rating { get; set; }
     }
 }

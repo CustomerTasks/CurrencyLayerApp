@@ -12,6 +12,9 @@ using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
+    /// <summary>
+    /// ViewModel for SettingPage.xaml
+    /// </summary>
     class SettingViewModel : ViewModelBase
     {
         public SettingViewModel()
@@ -191,13 +194,14 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
         /// <summary>
-        /// Filters data by search substring.
+        /// Filters and sorts data by search substring.
         /// </summary>
         private void FilterSearchedResult()
         {
+            //1. If app isn't searching, just sorts first selected, later non-selected currencies.
             if (string.IsNullOrEmpty(_searchField))
             {
-                var list = new ObservableCollection<CurrencyModel>(_currencyModels.Where(x=>x.IsSelected));
+                var list = new ObservableCollection<CurrencyModel>(_currencyModels.Where(x => x.IsSelected));
                 foreach (var model in _currencyModels)
                 {
                     if (!list.Any(x => x.Code == model.Code))
@@ -209,16 +213,21 @@ namespace CurrencyLayerApp.ViewModels
             }
             else
             {
+                //2. Filters by searching substring. Search is applying to Code and Name.
                 FilteredModels =
-                    new ObservableCollection<CurrencyModel>(_currencyModels.Where(x => x.Name.ToLower().Contains(_searchField) || x.Code.ToLower().Contains(_searchField)));
+                    new ObservableCollection<CurrencyModel>(_currencyModels.Where(x =>
+                        x.Name.ToLower().Contains(_searchField) || x.Code.ToLower().Contains(_searchField)));
             }
         }
-
+        /// <summary>
+        /// Initializes checkboxes by selected currencies.
+        /// </summary>
         private void InitCheckBoxs()
         {
             var list = CurrencyLayerApplication.CurrencyModels;
             foreach (var model in list)
             {
+                //Find first currency by Code and marks as selected.
                 CurrencyModels.First(x => x.Code == model.Code).IsSelected = model.IsSelected;
             }
             FilterSearchedResult();
@@ -226,9 +235,9 @@ namespace CurrencyLayerApp.ViewModels
 
         #endregion
 
-        #region <Additional>
+        #region <Additional or trash>
 
-        protected override void ThreadMethod()
+        protected override void Execute()
         {
             //ignored
         }

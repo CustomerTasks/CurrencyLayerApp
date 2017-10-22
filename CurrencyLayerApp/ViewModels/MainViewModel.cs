@@ -8,6 +8,7 @@ using CurrencyLayerApp.Infrastructure.Global;
 
 namespace CurrencyLayerApp.ViewModels
 {
+    /// <inheritdoc />
     /// <summary>
     /// ViewModel for MainWindow.xaml
     /// </summary>
@@ -72,8 +73,11 @@ namespace CurrencyLayerApp.ViewModels
         #endregion
 
         #region <Methods>
-
-        protected override void ThreadMethod()
+        /// <summary>
+        /// Executes some task in the thread.
+        /// Just notifies us about Application work.
+        /// </summary>
+        protected override void Execute()
         {
             while (true)
             {

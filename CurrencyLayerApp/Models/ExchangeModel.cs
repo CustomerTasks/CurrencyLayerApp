@@ -6,7 +6,7 @@ namespace CurrencyLayerApp.Models
     /// <summary>
     /// For converting currencies in Exchange Tab.
     /// </summary>
-    class ExchangeModel : ICurrency
+    public class ExchangeModel : ICurrency
     {
         /// <inheritdoc />
         /// <summary>

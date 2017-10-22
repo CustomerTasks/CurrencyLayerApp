@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls.DataVisualization.Charting;
-using System.Windows.Media;
 using CurrencyLayerApp.Abstractions;
 using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.DataManagers;
@@ -15,30 +11,45 @@ using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
+    /// <summary>
+    /// ViewModel for HistoricalDataPage.xaml
+    /// </summary>
     class HistoricalDataViewModel : ViewModelBase, IInitializationManager
     {
-        private readonly AreaSeries _areaSerie;
-
-        public HistoricalDataViewModel():base(){
-        }
-
         #region <Fields>
 
+        /// <summary>
+        /// Selected currencies
+        /// </summary>
         private ObservableCollection<CurrencyModel> _currencyModels;
+
+        /// <summary>
+        /// Header for Y-axis
+        /// </summary>
         private string _description;
+
+        /// <summary>
+        /// Currency Points (datetime, rating)
+        /// </summary>
         private KeyValuePair<string, double>[] _chart;
+
         private CurrencyModel _currencyModelFrom;
         private CurrencyModel _currencyModelTo;
-        private Dictionary<DateTime, ApiCurrencyModel> _historicalData;
-        private IDataManager<Dictionary<DateTime, ApiCurrencyModel>> _dataManager;
-        private bool _isEnabled;
-        private double _max;
-        private double min;
 
-        public HistoricalDataViewModel(AreaSeries areaSerie):this()
-        {
-            _areaSerie = areaSerie;
-        }
+        /// <summary>
+        /// Colection of historical data (datetime, currencies[])
+        /// </summary>
+        private Dictionary<DateTime, ApiCurrencyModel> _historicalData;
+
+        /// <summary>
+        /// Manager which saves/uploads data.
+        /// </summary>
+        private IDataManager<Dictionary<DateTime, ApiCurrencyModel>> _dataManager;
+
+        /// <summary>
+        /// Property for blocking UI or etc
+        /// </summary>
+        private bool _isEnabled;
 
         #endregion
 
@@ -85,7 +96,7 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-         
+
 
         public ObservableCollection<CurrencyModel> CurrencyModels
         {
@@ -96,6 +107,7 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
+
         public bool IsEnabled
         {
             get { return _isEnabled; }
@@ -109,13 +121,19 @@ namespace CurrencyLayerApp.ViewModels
         #endregion
 
         #region <Methods> 
+
+        /// <summary>
+        /// Initializes data & contexts by selected currencies.
+        /// It need after apllying changes in Settings (changing currency selections)
+        /// </summary>
         public void Initialize()
         {
             if (_currencyModels == null || !_currencyModels.Any())
             {
                 if (_currencyModels != null && _currencyModels.Any())
                 {
-                    var checkingModels = new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
+                    var checkingModels =
+                        new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
                     if (_currencyModels.Count == checkingModels.Count)
                     {
                         int count = 0;
@@ -135,9 +153,14 @@ namespace CurrencyLayerApp.ViewModels
             }
             InitializeModels();
         }
+
+        /// <summary>
+        /// Initializes and draws chart
+        /// </summary>
         private void InitializeChart()
         {
-            if (!CurrencyModels.Any() || CurrencyModelFrom==null || CurrencyModelTo==null || _historicalData==null)
+            if (!CurrencyModels.Any() || CurrencyModelFrom == null || CurrencyModelTo == null ||
+                _historicalData == null)
                 return;
             Description = $"{_currencyModelFrom.Code}/{_currencyModelTo.Code}";
             _chart = new KeyValuePair<string, double>[_historicalData.Count];
@@ -147,21 +170,23 @@ namespace CurrencyLayerApp.ViewModels
                 _chart[i--] = new KeyValuePair<string, double>(model.Key.ToString("dd/MM/yyyy"),
                     model.Value.Currencies[_currencyModelFrom.Code] / model.Value.Currencies[_currencyModelTo.Code]);
             }
-            /*_areaSerie.Background = new SolidColorBrush(Color.FromArgb(172, 32, 178, 170));
-            var linearAxis = ((LinearAxis) _areaSerie.DependentRangeAxis);
-            linearAxis.Minimum = _chart.Min(x => x.Value);
-            linearAxis.Maximum = _chart.Max(x => x.Value);*/
             Chart = _chart;
         }
+
+        /// <summary>
+        /// Initializes models after applyying changes in Setting tab.
+        /// </summary>
         private void InitializeModels()
         {
             CurrencyModels =
                 new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
-            
             IsEnabled = true;
         }
 
-        protected override void ThreadMethod()
+        /// <summary>
+        /// Executes main task.
+        /// </summary>
+        protected override void Execute()
         {
             while (true)
             {
@@ -170,28 +195,24 @@ namespace CurrencyLayerApp.ViewModels
                     Thread.Abort();
                     break;
                 }
-                try
+                if (!Settings.Instance.IsConfigured) return;
+                Initialize();
+                UploadByManagers();
+                if (!IsCreated)
                 {
-                    if (!Settings.Instance.IsConfigured) return;
-                    Initialize();
-                    DownloadByManagers();
-                    if (!IsCreated)
-                    {
-                        Calculation();
-                        InitializeChart();
-                        Task.Run(() => _dataManager.Save(_historicalData));
-                        IsCreated = true;
-                    }
-                    CurrencyLayerApplication.ThreadSleep();
+                    CheckSelectedModels();
+                    InitializeChart();
+                    Task.Run(() => _dataManager.Save(_historicalData));
+                    IsCreated = true;
                 }
-                catch (Exception e)
-                {
-                    //ignored
-                }
+                CurrencyLayerApplication.ThreadSleep();
             }
         }
 
-        private void Calculation()
+        /// <summary>
+        /// Checks models are null after applying changes in Setting tab. 
+        /// </summary>
+        private void CheckSelectedModels()
         {
             var currencyModels = CurrencyLayerApplication.CurrencyModels;
             if (_currencyModelFrom == null || _currencyModelTo == null)
@@ -203,7 +224,10 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
-        private void DownloadByManagers()
+        /// <summary>
+        /// Upload data from local DB or API.
+        /// </summary>
+        private void UploadByManagers()
         {
             _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
             var downloaded = _dataManager.Upload();
@@ -231,6 +255,5 @@ namespace CurrencyLayerApp.ViewModels
 
 
         #endregion
-
     }
 }

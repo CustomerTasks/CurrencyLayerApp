@@ -11,7 +11,7 @@ namespace CurrencyLayerApp.Views.Pages
         public HistoricalData()
         {
             InitializeComponent();
-            DataContext = new HistoricalDataViewModel(AreaSerie);
+            DataContext = new HistoricalDataViewModel();
         }
     }
 }

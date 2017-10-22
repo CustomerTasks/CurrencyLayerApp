@@ -44,7 +44,7 @@
                                            IsEnabled="{Binding IsEnabled}"/>
                     <ComboBox Style="{StaticResource ComboBox}"
                               ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" 
-                              SelectedItem="{Binding CurrencyModel , Converter= {StaticResource CurrentModelConverter}}"
+                              SelectedItem="{Binding SelectedCurrencyModel , Converter= {StaticResource CurrentModelConverter}}"
                               IsEnabled="{Binding IsEnabled}"/>
                 </StackPanel>
             </StackPanel>

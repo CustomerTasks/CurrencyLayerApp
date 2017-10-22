@@ -13,18 +13,28 @@ File Structure:<br />
 	 5.3.Curreccies.TXT - list of currencies<br />
 6.ViewModels - main operations<br />
 7.Views - UIs<br />
+<h1>CurrencyLayerApp.DAL (data access layer)</h1><br />
+1) Contexts - Data base context<br />
+2) Entities - Data base tables<br />
+3) Infrastructure - Main operation inside assembly<br />
+4) Repositories - Storage pattern with CRUD operations<br />
+<br />
+1) Pattern 'Repository' & 'UnitOfWork'<br />
+https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application  <br />
+2) Disposable Pattern<br />
+https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/dispose-pattern<br />
+3) Singleton Pattern<br />
+https://msdn.microsoft.com/en-us/library/ff650316.aspx?f=255&MSPPError=-2147217396<br />
+4) Strategy Pattern<br />
+https://www.wikiwand.com/en/Strategy_pattern<br />
+5) Each Http Request contains: <br />
+		-host url + url(also parameters in url)<br />
+		-method (get,post,put....)<br />
+		-headers (token, content type ...)<br />
+		-request body (converted class into json, form data ...)<br />
+https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client <br />
+6) EntityFramework Code-First way<br />
+http://www.entityframeworktutorial.net/code-first/what-is-code-first.aspx <br />
+7) Template method Pattern<br />
+http://www.dotnettricks.com/learn/designpatterns/template-method-design-pattern-c-sharp <br />
 
-
-1) Pattern 'Repository' & 'UnitOfWork'
-https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
-2) Disposable Pattern
-https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/dispose-pattern
-3) Singleton Pattern
-https://msdn.microsoft.com/en-us/library/ff650316.aspx?f=255&MSPPError=-2147217396
-4) Strategy Pattern
-https://www.wikiwand.com/en/Strategy_pattern
-5) Each Http Request contains: 
-		-host url + url(also parameters in url)
-		-method (get,post,put....)
-		-headers (token, content type ...)
-		-request body (converted class into json, form data ...)

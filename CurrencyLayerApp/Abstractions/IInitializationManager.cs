@@ -7,12 +7,9 @@
     internal interface IInitializationManager
     {
         /// <summary>
-        /// Property for blocking UI ot etc
+        /// Property for blocking UI or etc
         /// </summary>
         bool IsEnabled { get; set; }
-        /// <summary>
-        /// Initialization
-        /// </summary>
         void Initialize();
     }
 }

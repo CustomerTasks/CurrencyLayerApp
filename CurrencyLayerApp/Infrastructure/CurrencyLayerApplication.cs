@@ -17,7 +17,7 @@ namespace CurrencyLayerApp.Infrastructure
     internal static class CurrencyLayerApplication
     {
         /// <summary>
-        /// Selected currencies
+        /// General selected currencies.
         /// </summary>
         public static CurrencyModel[] CurrencyModels;
 

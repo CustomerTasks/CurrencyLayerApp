@@ -9,7 +9,7 @@ namespace CurrencyLayerApp.Abstractions
     {
         protected Downloader()
         {
-            Thread = new Thread(ThreadMethod);
+            Thread = new Thread(Execute);
             Thread.Start();
         }
 
@@ -17,9 +17,10 @@ namespace CurrencyLayerApp.Abstractions
         /// Thread
         /// </summary>
         protected readonly Thread Thread;
+
         /// <summary>
-        /// Executes some task in the thread
+        /// Executes some task in the thread.
         /// </summary>
-        protected abstract void ThreadMethod();
+        protected abstract void Execute();
     }
 }

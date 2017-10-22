@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using CurrencyLayerApp.Abstractions;
 using CurrencyLayerApp.Helpers;
 using CurrencyLayerApp.Infrastructure;
@@ -12,14 +11,36 @@ using static CurrencyLayerApp.Infrastructure.CurrencyLayerApplication;
 
 namespace CurrencyLayerApp.ViewModels
 {
+    /// <summary>
+    /// ViewModel for CurrentDataPage.xaml
+    /// </summary>
     internal class ExchangeViewModel : ViewModelBase, IInitializationManager
     {
         #region <Fields>
 
+        /// <summary>
+        /// Value which we want to convert to other currencies.
+        /// </summary>
         private double _currencyValue;
+
+        /// <summary>
+        /// General selected currencies.
+        /// </summary>
         private ObservableCollection<CurrencyModel> _currencyModels;
-        private CurrencyModel _currencyModel;
+
+        /// <summary>
+        /// Selected curency which we want to get converted values in other values.
+        /// </summary>
+        private CurrencyModel _selectedCurrencyModel;
+
+        /// <summary>
+        /// Converted currencies without _selectedCurrencyModel.
+        /// </summary>
         private ObservableCollection<ExchangeModel> _exchangeModels;
+
+        /// <summary>
+        /// Property for blocking UI or etc
+        /// </summary>
         private bool _isEnabled;
 
         #endregion
@@ -57,12 +78,12 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
-        public CurrencyModel CurrencyModel
+        public CurrencyModel SelectedCurrencyModel
         {
-            get { return _currencyModel; }
+            get { return _selectedCurrencyModel; }
             set
             {
-                _currencyModel = value;
+                _selectedCurrencyModel = value;
                 Calculation();
                 OnPropertyChanged();
             }
@@ -77,11 +98,15 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-         
+
         #endregion
 
         #region <Methods>
 
+        /// <summary>
+        /// Initializes data & contexts by selected currencies.
+        /// It need after apllying changes in Settings (changing currency selections)
+        /// </summary>
         public void Initialize()
         {
             if (Settings.Instance.IsConfigured)
@@ -89,7 +114,7 @@ namespace CurrencyLayerApp.ViewModels
                 CurrencyModels = new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
                 if (CurrencyModels != null && CurrencyModels.Any())
                 {
-                    CurrencyModel = _currencyModels.First();
+                    SelectedCurrencyModel = _currencyModels.First();
                     CurrencyValue = 1.0;
                 }
                 IsEnabled = true;
@@ -100,7 +125,10 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
-        protected override void ThreadMethod()
+        /// <summary>
+        /// Execures main task.
+        /// </summary>
+        protected override void Execute()
         {
             while (true)
             {
@@ -109,7 +137,7 @@ namespace CurrencyLayerApp.ViewModels
                     Thread.Abort();
                     break;
                 }
-                if (!Settings.Instance.IsConfigured )
+                if (!Settings.Instance.IsConfigured)
                     return;
                 Initialize();
                 Calculation();
@@ -117,10 +145,15 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
+        /// <summary>
+        /// Converts value for other currencies.
+        /// </summary>
         private void Calculation()
         {
             if (!CurrencyModels.Any()) return;
-            if (CurrencyModel == null) CurrencyModel = CurrencyModels.First();
+            if (SelectedCurrencyModel == null) SelectedCurrencyModel = CurrencyModels.First();
+
+            //Takes last updated data for converting.
             var dataManager = new LocalDataManagerForCurrencies();
             var lastHistory = dataManager.Upload();
             foreach (var quote in lastHistory.Currencies)
@@ -130,13 +163,17 @@ namespace CurrencyLayerApp.ViewModels
                     CurrencyModels.First(x => x.Code == quote.Key).Rating = quote.Value;
                 }
             }
-            var forCalculating = CurrencyModels.Where(x => x.Code != CurrencyModel.Code);
-            CurrencyModel.Rating = CurrencyModels.First(x => x.Code == CurrencyModel.Code).Rating;
+
+            //Filter currencies without CurrencyModel
+            var forCalculating = CurrencyModels.Where(x => x.Code != SelectedCurrencyModel.Code);
+            SelectedCurrencyModel.Rating = CurrencyModels.First(x => x.Code == SelectedCurrencyModel.Code).Rating;
+
+            //Converting. Formula: ConvertedCurrency[i] =  (CurrencyValue * CurrencyModels[i])/ SelectedCurrency.
             ExchangeModels = new ObservableCollection<ExchangeModel>(forCalculating.Select(x =>
-                x.ToExchangeModel(Math.Round(CurrencyValue / CurrencyModel.Rating,5))));
+                x.ToExchangeModel(Math.Round(CurrencyValue / SelectedCurrencyModel.Rating, 5))));
         }
 
         #endregion
-        
+
     }
 }
