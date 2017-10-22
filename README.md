@@ -19,6 +19,7 @@ File Structure:<br />
 3) Infrastructure - Main operation inside assembly<br />
 4) Repositories - Storage pattern with CRUD operations<br />
 <br />
+<h1>Resources</h1><br />
 1) Pattern 'Repository' & 'UnitOfWork'<br />
 https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application  <br />
 2) Disposable Pattern<br />
