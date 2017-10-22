@@ -8,7 +8,6 @@ namespace CurrencyLayerApp.DAL.Repositories
 {
     internal class HistoricalDataRepository : IRepository<HistoricalData>
     {
-
         public HistoricalDataRepository(CurrencyLayerContext context)
         {
             Set = context.HistoricalDatas;

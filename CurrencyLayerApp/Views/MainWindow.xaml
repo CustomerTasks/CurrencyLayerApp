@@ -9,6 +9,7 @@
         xmlns:converters="clr-namespace:CurrencyLayerApp.Infrastructure.Converters"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
+        Icon="../Resources/Pictures/exchange.png"
         Title="Currency Layer" Height="600" Width="800"
         MinHeight="600" MinWidth="800">
     <Window.Resources>
@@ -31,12 +32,15 @@
             <RowDefinition/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <TabControl Margin="8" SelectedIndex="{Binding Index}" Background="Transparent">
+        <TabControl Margin="8" 
+                    SelectedIndex="{Binding Index}" 
+                    Background="Transparent">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/charts.png"/>
-                        <TextBlock Text="{x:Static resx:MainWindow.CurrentData}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static resx:MainWindow.CurrentData}" 
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Frame Source="Pages/CurrentData.xaml"/>
@@ -45,7 +49,8 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/time.png"/>
-                        <TextBlock Text="{x:Static resx:MainWindow.HistoricalData}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static resx:MainWindow.HistoricalData}" 
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Frame Source="Pages/HistoricalData.xaml"/>
@@ -54,7 +59,8 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/exchange.png"/>
-                        <TextBlock Text="{x:Static resx:MainWindow.ExchangeData}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static resx:MainWindow.ExchangeData}" 
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Frame Source="Pages/ExchangeData.xaml"/>
@@ -63,7 +69,8 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/settings.png"/>
-                        <TextBlock Text="{x:Static resx:MainWindow.Settings}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static resx:MainWindow.Settings}" 
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Frame Source="Pages/SettingPage.xaml" />
@@ -72,8 +79,13 @@
         <DockPanel Grid.Row="1" Background="White">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
                         Margin="0,0,6,0">
-                <TextBlock VerticalAlignment="Center" Text="{Binding LogMessage}" TextAlignment="Center"/>
-                <Border Width="21" Height="21" Background="{Binding Color, Converter={StaticResource ColorConverter}}" Margin="4" CornerRadius="21"/>
+                <TextBlock VerticalAlignment="Center" 
+                           Text="{Binding LogMessage}" 
+                           TextAlignment="Center"/>
+                <Border Width="21" Height="21" 
+                        Background="{Binding Color, Converter={StaticResource ColorConverter}}" 
+                        Margin="4" 
+                        CornerRadius="21"/>
             </StackPanel>
         </DockPanel>
     </Grid>

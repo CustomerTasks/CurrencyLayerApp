@@ -19,22 +19,45 @@ namespace CurrencyLayerApp.ViewModels
             _currencyModels = new ObservableCollection<CurrencyModel>(Parsers.GetStoredModels());
             SearchField = string.Empty;
             InitCheckBoxs();
-            SaveChanges = new Command(() => Task.Run(() => Save()));
-            SetDefaultValues = new Command(SetDefault);
+            SaveChanges = new CommandBase(() => Task.Run(() => Save()));
+            SetDefaultValues = new CommandBase(SetDefault);
             ApiKey = Settings.Instance.ApiKey;
             Time = Settings.Instance.TimeBetweenCalls;
         }
 
         #region <Fields>
-
+        /// <summary>
+        /// All currencies from file Currencies.txt
+        /// </summary>
         private ObservableCollection<CurrencyModel> _currencyModels;
+        /// <summary>
+        /// Filtered data (search, first selected, later non-selected).
+        /// </summary>
         private ObservableCollection<CurrencyModel> _filteredModels;
+        /// <summary>
+        /// Button event "Save".
+        /// </summary>
         private ICommand _savechanges;
+        /// <summary>
+        /// API key.
+        /// </summary>
         private string _apiKey;
+        /// <summary>
+        /// Time between API calls.
+        /// </summary>
         private int _time = 10;
+        /// <summary>
+        /// Button event "Default".
+        /// </summary>
         private ICommand _setDefaultValues;
+        /// <summary>
+        /// SubString for cearch currencies.
+        /// </summary>
         private string _searchField;
-        private const int _maxCurrencies = 7;
+        /// <summary>
+        /// Maximum count of selected currencies
+        /// </summary>
+        private const int MaxCurrencies = 7;
 
         #endregion
 
@@ -117,17 +140,25 @@ namespace CurrencyLayerApp.ViewModels
         #endregion
 
         #region <Methods>
-
+        /// <summary>
+        /// Event for button "Save". 
+        /// Stores selected currencies in local db.
+        /// API key & time are being saved in settings.txt
+        /// </summary>
         private void Save()
         {
+            //1. Filters all currencies to selected
             var currencyModels = CurrencyModels.Where(x => x.IsSelected);
             var count = currencyModels.Count();
-            if (count > _maxCurrencies)
+            /*2. If collection's size is bigger than MaxCurrencies, 
+              takes first 7 currencies from selected. 
+             (CurrentData Tab is full with 7 currencies)*/
+            if (count > MaxCurrencies)
             {
-                currencyModels = currencyModels.Take(_maxCurrencies).ToArray();
+                currencyModels = currencyModels.Take(MaxCurrencies).ToArray();
             }
             var uow = UnitOfWork.Instance;
-
+            //3. Saves selected models into local DB.
             lock (uow)
             {
                 uow.DeleteCurrencies();
@@ -140,10 +171,13 @@ namespace CurrencyLayerApp.ViewModels
                 }
                 uow.Save();
             }
+            //Refresh currencies in all tabs.
             CurrencyLayerApplication.RefreshModels();
             Settings.Instance.Save();
         }
-
+        /// <summary>
+        /// Event for button "Set Default". 
+        /// </summary>
         private void SetDefault()
         {
             ApiKey = "";
@@ -156,7 +190,9 @@ namespace CurrencyLayerApp.ViewModels
                 }
             }
         }
-
+        /// <summary>
+        /// Filters data by search substring.
+        /// </summary>
         private void FilterSearchedResult()
         {
             if (string.IsNullOrEmpty(_searchField))
@@ -192,8 +228,13 @@ namespace CurrencyLayerApp.ViewModels
 
         #region <Additional>
 
-
+        protected override void ThreadMethod()
+        {
+            //ignored
+        }
 
         #endregion
+
+
     }
 }

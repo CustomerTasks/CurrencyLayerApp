@@ -5,9 +5,15 @@ using CurrencyLayerApp.DAL.Repositories;
 
 namespace CurrencyLayerApp.DAL.Infrastructure
 {
-    public sealed class UnitOfWork:IDisposable
+    /// <inheritdoc />
+    /// <summary>
+    /// Pattern 'UnitOfWork' as Singleton pattern
+    /// See in README.md 
+    /// </summary>
+    public sealed class UnitOfWork : IDisposable
     {
         static CurrencyLayerContext _context;
+
         private UnitOfWork()
         {
             _context = new CurrencyLayerContext();
@@ -16,20 +22,31 @@ namespace CurrencyLayerApp.DAL.Infrastructure
         }
 
         #region <Fields>
-
+        /// <summary>
+        /// Unified object with lazy initialization (thread-safe object)
+        /// </summary>
         private static readonly Lazy<UnitOfWork> Lazy = new Lazy<UnitOfWork>(() => new UnitOfWork());
+
+        //Tables of DB
         private readonly IRepository<Currency> _currencyRepository;
         private readonly IRepository<HistoricalData> _historicalRepository;
 
         #endregion
 
         #region <Properties>
-
+        /// <summary>
+        /// Unified object with lazy initialization (thread-safe object)
+        /// </summary>
         public static UnitOfWork Instance { get; } = Lazy.Value;
-        public bool IsDisposed { get; private set; } = false;
+
+        /// <summary>
+        /// For IDisposable pattern
+        /// </summary>
+        public bool IsDisposed { get; private set; }
 
         #endregion
 
+        //CRUD operations inside of Table (Create/Read/Update/Delete)
         #region <Methods>
 
         #region Adding
@@ -57,12 +74,18 @@ namespace CurrencyLayerApp.DAL.Infrastructure
         {
             return _historicalRepository.Get(func);
         }
-
+        /// <summary>
+        /// Gets all entries from Currency Table
+        /// </summary>
+        /// <returns>currencies</returns>
         public Currency[] GetCurrencies()
         {
             return _currencyRepository.GetAll();
         }
-
+        /// <summary>
+        /// Gets all entries from HistoryDate Table
+        /// </summary>
+        /// <returns>history</returns>
         public HistoricalData[] GetHistoricalData()
         {
             return _historicalRepository.GetAll();
@@ -120,11 +143,10 @@ namespace CurrencyLayerApp.DAL.Infrastructure
             {
                 IsDisposed = true;
                 _context.Database.Connection.Close();
-                //_context.Dispose();
-                _context = null;
                 GC.Collect();
             }
         }
+
         public void Dispose()
         {
             if (IsDisposed)

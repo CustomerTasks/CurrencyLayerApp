@@ -15,13 +15,11 @@ using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    class CurrentDataViewModel : ViewModelBase, IDownloader, IInitializationManager
+    class CurrentDataViewModel : ViewModelBase, IInitializationManager
     {
-        public CurrentDataViewModel(Grid grid)
+        public CurrentDataViewModel(Grid grid):base()
         {
             _grid = grid;
-            Thread = new Thread(DownloadData);
-            Thread.Start();
         }
 
         #region <Fields>
@@ -46,8 +44,7 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public Thread Thread { get; set; }
+         
 
         #endregion
 
@@ -81,7 +78,7 @@ namespace CurrencyLayerApp.ViewModels
             _currencyModels = new ObservableCollection<CurrencyModel>(CurrencyLayerApplication.CurrencyModels);
         }
 
-        public void DownloadData()
+        protected override void ThreadMethod()
         {
             while (true)
             {
@@ -128,7 +125,7 @@ namespace CurrencyLayerApp.ViewModels
 
         private void Calculation()
         {
-            var dictionary = _liveCurrencyModel.Quotes;
+            var dictionary = _liveCurrencyModel.Currencies;
             var size = dictionary.Count;
             _rates = new double[size, size];
             int i = 0, j;
@@ -137,7 +134,7 @@ namespace CurrencyLayerApp.ViewModels
                 j = 0;
                 foreach (var code2 in dictionary)
                 {
-                    _rates[i, j++] = code2.Value / (code1.Value == 0 ? 1 : code1.Value);
+                    _rates[i, j++] = Math.Round(code2.Value / (code1.Value == 0 ? 1 : code1.Value), 5);
                 }
                 i++;
             }
@@ -151,8 +148,8 @@ namespace CurrencyLayerApp.ViewModels
         {
             if (Settings.Instance.ApiKey == null)
                 return;
-            Tuple<CurrencyModel, CurrencyRate[]>[] rates =
-                new Tuple<CurrencyModel, CurrencyRate[]>[_currencyModels.Count];
+            Tuple<CurrencyModel, ExchangeModel[]>[] rates =
+                new Tuple<CurrencyModel, ExchangeModel[]>[_currencyModels.Count];
             _grid.ColumnDefinitions.Clear();
             _grid.RowDefinitions.Clear();
             for (var i = 0; i <= _currencyModels.Count; i++)
@@ -161,11 +158,11 @@ namespace CurrencyLayerApp.ViewModels
                 _grid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)});
                 if (i < _currencyModels.Count)
                 {
-                    rates[i] = new Tuple<CurrencyModel, CurrencyRate[]>(_currencyModels[i],
-                        new CurrencyRate[_currencyModels.Count]);
+                    rates[i] = new Tuple<CurrencyModel, ExchangeModel[]>(_currencyModels[i],
+                        new ExchangeModel[_currencyModels.Count]);
                     for (int j = 0; j < rates[i].Item2.Length; j++)
                     {
-                        rates[i].Item2[j] = new CurrencyRate {Code = _currencyModels[j].Code, Rate = _rates[i, j]};
+                        rates[i].Item2[j] = new ExchangeModel {Code = _currencyModels[j].Code, Rating = _rates[i, j]};
                     }
                 }
             }
@@ -202,10 +199,10 @@ namespace CurrencyLayerApp.ViewModels
                 for (int j = 0; j < rates[i].Item2.Length; j++)
                 {
                     var panel = GetStackPanel();
-                    panel.Children.Add(GetTextBlock(Math.Round(rates[i].Item2[j].Rate, 5).ToString(), Brushes.Black));
+                    panel.Children.Add(GetTextBlock(Math.Round(rates[i].Item2[j].Rating, 5).ToString(), Brushes.Black));
                     if (i != j)
                     {
-                        panel.Children.Add(GetTextBlock(Math.Round(rates[j].Item2[i].Rate, 5).ToString(),
+                        panel.Children.Add(GetTextBlock(Math.Round(rates[j].Item2[i].Rating, 5).ToString(),
                             Brushes.DarkGray));
                     }
                     var panelmain = GetPanel(panel);

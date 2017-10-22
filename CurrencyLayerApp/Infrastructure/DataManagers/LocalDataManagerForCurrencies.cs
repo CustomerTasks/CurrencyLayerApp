@@ -1,4 +1,5 @@
-﻿using CurrencyLayerApp.DAL.Infrastructure;
+﻿using CurrencyLayerApp.Abstractions;
+using CurrencyLayerApp.DAL.Infrastructure;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.Infrastructure.DataManagers
@@ -7,16 +8,15 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
     {
         public void Save(ApiCurrencyModel data)
         {
-            
+            //ignored
         }
-
         public ApiCurrencyModel Upload()
         {
             var result = new ApiCurrencyModel();
             var uow = UnitOfWork.Instance;
             foreach (var currencyModel in uow.GetCurrencies())
             {
-                result.Quotes.Add(currencyModel.Code, currencyModel.Rating);
+                result.Currencies.Add(currencyModel.Code, currencyModel.Rating);
             }
             return result;
         }

@@ -31,24 +31,28 @@
         <viewModels:SettingViewModel/>
     </Page.DataContext>
     <Border Style="{StaticResource Border}">
-    <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" Grid.RowSpan="2" VerticalAlignment="Center">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" 
+                        Grid.RowSpan="2" 
+                        VerticalAlignment="Center">
                 <Grid Style="{StaticResource CustomGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{x:Static resx:SettingPage.ApiKey}"/>
-                    <TextBox Grid.Column="1" Width="256" VerticalContentAlignment="Center"
+                    <TextBox Grid.Column="1" 
+                             Width="256" 
+                             VerticalContentAlignment="Center"
                              Text="{Binding ApiKey}"/>
                 </Grid>
                 <Grid Style="{StaticResource CustomGrid}">
@@ -57,50 +61,77 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{x:Static resx:SettingPage.ApiTime}"/>
-                    <toolkit:IntegerUpDown Grid.Column="1" Minimum="0" Value="{Binding Time}"/>
+                    <toolkit:IntegerUpDown Grid.Column="1" 
+                                           Minimum="0" 
+                                           Value="{Binding Time}"/>
                 </Grid>
             </StackPanel>
 
-        <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"  Header="{x:Static resx:SettingPage.CurrencySelector}">
-            <StackPanel Orientation="Vertical" >
-                    <Grid VerticalAlignment="Center" Margin="4" Style="{StaticResource CustomGrid}">
-                        <Grid.ColumnDefinitions><ColumnDefinition/>
-                        <ColumnDefinition/></Grid.ColumnDefinitions>
+            <GroupBox Grid.Column="1" 
+                  Grid.Row="0" 
+                  Grid.RowSpan="2"  
+                  Header="{x:Static resx:SettingPage.CurrencySelector}">
+                <StackPanel Orientation="Vertical" >
+                    <Grid VerticalAlignment="Center" 
+                          Margin="4" 
+                          Style="{StaticResource CustomGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
                         <TextBlock Text="{x:Static resx:SettingPage.FindByCurrencyName}"/>
-                        <TextBox Grid.Column="1" Text="{Binding SearchField, Converter={StaticResource FieldConverter}, UpdateSourceTrigger=PropertyChanged}" 
+                        <TextBox Grid.Column="1" 
+                                 Text="{Binding SearchField, Converter={StaticResource FieldConverter}, UpdateSourceTrigger=PropertyChanged}" 
                                  VerticalContentAlignment="Center"/>
                     </Grid>
                     <ListView  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                ScrollViewer.VerticalScrollBarVisibility="Visible"
-                          Height="200"
-                          ItemsSource="{Binding FilteredModels}"
-                          SelectionMode="Single">
-                    <ListView.View>
-                        <GridView>
-                            <GridView.Columns>
-                                <GridViewColumn Header="#" >
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox IsChecked="{Binding IsSelected}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Code"  DisplayMemberBinding="{Binding Code}" Width="50"/>
-                                <GridViewColumn Header="Name"  DisplayMemberBinding="{Binding Name}"/>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                               Height="200"
+                               ItemsSource="{Binding FilteredModels}"
+                               SelectionMode="Single">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Header="#" >
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsSelected}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Code"  
+                                                DisplayMemberBinding="{Binding Code}" 
+                                                Width="50"/>
+                                    <GridViewColumn Header="Name"  
+                                                DisplayMemberBinding="{Binding Name}"/>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </StackPanel>
-        </GroupBox>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="2">
-            <TextBlock Foreground="Blue" Text="{x:Static resx:SettingPage.Count}" FontSize="10"/>
-                <TextBlock Foreground="Red" Text="{x:Static resx:SettingPage.SelectCurrenciesWarn}" FontSize="10" TextWrapping="Wrap" Width="400"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Button Content="{x:Static resx:SettingPage.SaveButton}" Command="{Binding SaveChanges}"/>
-            <Button Content="{x:Static resx:SettingPage.SetDefaultButton}" Command="{Binding SetDefaultValues}"/>
-        </StackPanel>
+            </GroupBox>
+            <StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Grid.ColumnSpan="2" 
+                    Grid.Row="2">
+                <TextBlock Foreground="Blue" 
+                       Text="{x:Static resx:SettingPage.Count}" 
+                       FontSize="10"/>
+                <TextBlock Foreground="Red" 
+                           Text="{x:Static resx:SettingPage.SelectCurrenciesWarn}" 
+                           FontSize="10" 
+                           TextWrapping="Wrap" 
+                           Width="400"/>
+                <StackPanel Orientation="Horizontal" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" >
+                    <Button Content="{x:Static resx:SettingPage.SaveButton}" 
+                    Command="{Binding SaveChanges}"/>
+                    <Button Content="{x:Static resx:SettingPage.SetDefaultButton}" 
+                    Command="{Binding SetDefaultValues}"/>
+                </StackPanel>
             </StackPanel>
-    </Grid>
+        </Grid>
     </Border>
 </Page>

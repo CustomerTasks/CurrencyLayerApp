@@ -8,7 +8,6 @@ namespace CurrencyLayerApp.DAL.Repositories
 {
     internal class CurrencyRepository : IRepository<Currency>
     {
-
         public CurrencyRepository(CurrencyLayerContext context)
         {
             Set = context.Currencies;
@@ -35,6 +34,7 @@ namespace CurrencyLayerApp.DAL.Repositories
         {
             return Set.FirstOrDefault(func);
         }
+
         public Currency[] GetAll()
         {
             return Set.ToArray();
@@ -44,10 +44,10 @@ namespace CurrencyLayerApp.DAL.Repositories
         {
             Set.RemoveRange(Set);
         }
+
         public bool IsNotEmpty()
         {
             return Set.Any();
         }
-
     }
 }

@@ -5,9 +5,12 @@ VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyLayerApp", "CurrencyLayerApp\CurrencyLayerApp.csproj", "{5D2299B4-4BF0-4BB6-9A29-495EFD577930}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyLayerApp.Tests", "CurrencyLayerApp.Tests\CurrencyLayerApp.Tests.csproj", "{E5F132C3-9EDF-4D42-9DC4-6726C05619CD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyLayerApp.DAL", "CurrencyLayerApp.DAL\CurrencyLayerApp.DAL.csproj", "{AD12953F-6514-4883-8A4B-B80FB8547BFC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D99A8449-DFAD-4733-96F6-82EDAA2E76C2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +22,6 @@ Global
 		{5D2299B4-4BF0-4BB6-9A29-495EFD577930}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D2299B4-4BF0-4BB6-9A29-495EFD577930}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D2299B4-4BF0-4BB6-9A29-495EFD577930}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5F132C3-9EDF-4D42-9DC4-6726C05619CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5F132C3-9EDF-4D42-9DC4-6726C05619CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5F132C3-9EDF-4D42-9DC4-6726C05619CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5F132C3-9EDF-4D42-9DC4-6726C05619CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD12953F-6514-4883-8A4B-B80FB8547BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD12953F-6514-4883-8A4B-B80FB8547BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD12953F-6514-4883-8A4B-B80FB8547BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU

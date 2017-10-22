@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using CurrencyLayerApp.Abstractions;
@@ -11,13 +12,8 @@ using static CurrencyLayerApp.Infrastructure.CurrencyLayerApplication;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    internal class ExchangeViewModel : ViewModelBase, IInitializationManager, IDownloader
+    internal class ExchangeViewModel : ViewModelBase, IInitializationManager
     {
-        public ExchangeViewModel()
-        {
-            Thread=new Thread(DownloadData);
-            Thread.Start();
-        }
         #region <Fields>
 
         private double _currencyValue;
@@ -81,7 +77,7 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        public Thread Thread { get; set; }
+         
         #endregion
 
         #region <Methods>
@@ -104,7 +100,7 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
-        public void DownloadData()
+        protected override void ThreadMethod()
         {
             while (true)
             {
@@ -124,9 +120,10 @@ namespace CurrencyLayerApp.ViewModels
         private void Calculation()
         {
             if (!CurrencyModels.Any()) return;
+            if (CurrencyModel == null) CurrencyModel = CurrencyModels.First();
             var dataManager = new LocalDataManagerForCurrencies();
             var lastHistory = dataManager.Upload();
-            foreach (var quote in lastHistory.Quotes)
+            foreach (var quote in lastHistory.Currencies)
             {
                 if (CurrencyModels.Any(x => x.Code == quote.Key))
                 {
@@ -136,7 +133,7 @@ namespace CurrencyLayerApp.ViewModels
             var forCalculating = CurrencyModels.Where(x => x.Code != CurrencyModel.Code);
             CurrencyModel.Rating = CurrencyModels.First(x => x.Code == CurrencyModel.Code).Rating;
             ExchangeModels = new ObservableCollection<ExchangeModel>(forCalculating.Select(x =>
-                x.ToExchangeModel(CurrencyValue / CurrencyModel.Rating)));
+                x.ToExchangeModel(Math.Round(CurrencyValue / CurrencyModel.Rating,5))));
         }
 
         #endregion

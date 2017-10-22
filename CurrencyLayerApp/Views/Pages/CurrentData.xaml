@@ -29,6 +29,8 @@
         </Style>
     </Page.Resources>
     <Grid >
-        <Grid Name="CurrentDataGrid" Background="#bbbbbb"/>
+        <Grid Name="CurrentDataGrid" 
+              Background="#bbbbbb" 
+              IsEnabled="{Binding IsEnabled}"/>
     </Grid>
 </Page>

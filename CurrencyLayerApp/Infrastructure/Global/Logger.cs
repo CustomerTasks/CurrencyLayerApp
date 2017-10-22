@@ -2,17 +2,24 @@
 
 namespace CurrencyLayerApp.Infrastructure.Global
 {
+
     sealed class Logger
     {
-      
+        /// <summary>
+        /// Module which save last message about important events. 
+        /// (Singleton Pattern)
+        /// </summary>
         public Logger()
         {
-            _message = new Tuple<string, Color >("", Color.Gray);
+            _message = new Tuple<string, Color>("", Color.Gray);
         }
 
-        #region >Fields>
+        #region <Fields>
 
-        private Tuple<string,Color> _message;
+        /// <summary>
+        /// Message with color (red - error, gray - empty message, green - good news)
+        /// </summary>
+        private Tuple<string, Color> _message;
         static Lazy<Logger> _lazy = new Lazy<Logger>(() => new Logger());
 
         #endregion
@@ -36,21 +43,43 @@ namespace CurrencyLayerApp.Infrastructure.Global
 
         #region <Methods>
 
-        public void LogMessage(string message, Color color = Color.Gray)
+        /// <summary>
+        /// Saves last message
+        /// </summary>
+        /// <param name="message">text</param>
+        /// <param name="color">color</param>
+        private void LogMessage(string message, Color color = Color.Gray)
         {
-            _message = new Tuple<string, Color>(message,color);
+            _message = new Tuple<string, Color>(message, color);
+        }
+        /// <summary>
+        /// Gets last message.
+        /// </summary>
+        /// <returns></returns>
+        private Tuple<string, Color> GetLastLog()
+        {
+            // ?? - if left part is null, than take right part, else left
+            return _message ?? new Tuple<string, Color>("", Color.Gray);
         }
 
-        private Tuple<string, Color> GetLastLog() => _message ?? new Tuple<string, Color>("",Color.Gray);
-        
         #endregion
 
         #region <Static Methods>
 
-        public static void SetLogMessage(string message,Color color = Color.Gray)
+        /// <summary>
+        /// Saves last message
+        /// </summary>
+        /// <param name="message">text</param>
+        /// <param name="color">color</param>
+        public static void SetLogMessage(string message, Color color = Color.Gray)
         {
-            Instance.LogMessage(message,color);
+            Instance.LogMessage(message, color);
         }
+
+        /// <summary>
+        /// Gets last message.
+        /// </summary>
+        /// <returns></returns>
         public static Tuple<string, Color> GetLogMessage()
         {
             return Instance.GetLastLog();

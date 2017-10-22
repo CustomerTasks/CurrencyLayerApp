@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Net.Http;
+using CurrencyLayerApp.Abstractions;
 using CurrencyLayerApp.DAL.Entities;
 using CurrencyLayerApp.DAL.Infrastructure;
 using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.Infrastructure.DataManagers
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// More see in IDataProvider
+    /// </summary>
     class ApiDataManagerForCurrencies:IDataManager<ApiCurrencyModel>
     {
         private readonly CurrencyModel[] _currencyModels;
-
+        /// <summary>
+        /// Uploads live currencies ratings from API requests
+        /// </summary>
+        /// <param name="currencyModels">params for API</param>
         public ApiDataManagerForCurrencies(CurrencyModel[] currencyModels)
         {
             _currencyModels = currencyModels;
@@ -19,12 +27,16 @@ namespace CurrencyLayerApp.Infrastructure.DataManagers
         {
             if (data == null) return;
             var uow = UnitOfWork.Instance;
-            uow.DeleteCurrencies();
-            foreach (var model in data.Quotes)
+            //Rewrite currency data
+            lock (uow)
             {
-                uow.Add(new Currency() {Code = model.Key, Rating = model.Value});
+                uow.DeleteCurrencies();
+                foreach (var model in data.Currencies)
+                {
+                    uow.Add(new Currency() {Code = model.Key, Rating = model.Value});
+                }
+                uow.Save();
             }
-            uow.Save();
         }
 
         public ApiCurrencyModel Upload()

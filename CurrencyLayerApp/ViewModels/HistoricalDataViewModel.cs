@@ -15,15 +15,11 @@ using CurrencyLayerApp.Models;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    class HistoricalDataViewModel : ViewModelBase, IDownloader,IInitializationManager
+    class HistoricalDataViewModel : ViewModelBase, IInitializationManager
     {
         private readonly AreaSeries _areaSerie;
 
-        public HistoricalDataViewModel()
-        {
-            Thread = new Thread(DownloadData);
-            Thread.Start();
-            
+        public HistoricalDataViewModel():base(){
         }
 
         #region <Fields>
@@ -89,7 +85,7 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        public Thread Thread { get; set; }
+         
 
         public ObservableCollection<CurrencyModel> CurrencyModels
         {
@@ -149,7 +145,7 @@ namespace CurrencyLayerApp.ViewModels
             foreach (var model in _historicalData)
             {
                 _chart[i--] = new KeyValuePair<string, double>(model.Key.ToString("dd/MM/yyyy"),
-                    model.Value.Quotes[_currencyModelFrom.Code] / model.Value.Quotes[_currencyModelTo.Code]);
+                    model.Value.Currencies[_currencyModelFrom.Code] / model.Value.Currencies[_currencyModelTo.Code]);
             }
             /*_areaSerie.Background = new SolidColorBrush(Color.FromArgb(172, 32, 178, 170));
             var linearAxis = ((LinearAxis) _areaSerie.DependentRangeAxis);
@@ -165,7 +161,7 @@ namespace CurrencyLayerApp.ViewModels
             IsEnabled = true;
         }
 
-        public void DownloadData()
+        protected override void ThreadMethod()
         {
             while (true)
             {

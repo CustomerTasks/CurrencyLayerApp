@@ -141,23 +141,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Abstractions\IDownloader.cs" />
+    <Compile Include="Abstractions\Downloader.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Helpers\Command.cs" />
     <Compile Include="Infrastructure\CurrencyLayerApplication.cs" />
     <Compile Include="Infrastructure\Converters\CurrentModelCollectionConverter.cs" />
     <Compile Include="Infrastructure\Converters\FlagImageConverter.cs" />
     <Compile Include="Infrastructure\Converters\LogColorConverter.cs" />
-    <Compile Include="Infrastructure\Converters\DoubleConverter.cs" />
     <Compile Include="Infrastructure\Converters\SearchFieldConverter.cs" />
     <Compile Include="Infrastructure\DataManagers\ApiDataManagerForCurrencies.cs" />
     <Compile Include="Infrastructure\DataManagers\ApiDataManagerForHistoricalData.cs" />
-    <Compile Include="Infrastructure\DataManagers\IDataManager.cs" />
+    <Compile Include="Abstractions\IDataManager.cs" />
     <Compile Include="Infrastructure\Global\CommonData.cs" />
     <Compile Include="Helpers\Parsers.cs" />
     <Compile Include="Infrastructure\Converters\CurrentModelConverter.cs" />
     <Compile Include="Infrastructure\CurrencyLayerProvider.cs" />
     <Compile Include="Infrastructure\Global\Logger.cs" />
+    <Compile Include="Models\ExchangeModel.cs" />
+    <Compile Include="Abstractions\ICurrency.cs" />
+    <Compile Include="Resources\Strings\MainLogMessages.cs" />
     <Compile Include="Infrastructure\Global\Settings.cs" />
     <Compile Include="Infrastructure\DataManagers\LocalDataManagerForHistoricalData.cs" />
     <Compile Include="Models\CurrencyModel.cs" />
@@ -184,11 +186,10 @@
       <DependentUpon>SettingPage.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CurrentDataViewModel.cs" />
-    <Compile Include="Models\ExchangeModel.cs" />
     <Compile Include="ViewModels\HistoricalDataViewModel.cs" />
     <Compile Include="Infrastructure\DataManagers\LocalDataManagerForCurrencies.cs" />
     <Compile Include="ViewModels\ExchangeViewModel.cs" />
-    <Compile Include="ViewModels\IInitializationManager.cs" />
+    <Compile Include="Abstractions\IInitializationManager.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

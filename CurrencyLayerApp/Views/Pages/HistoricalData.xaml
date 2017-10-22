@@ -2,9 +2,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:CurrencyLayerApp.Views.Pages"
-      xmlns:viewModels="clr-namespace:CurrencyLayerApp.ViewModels"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
       xmlns:converters="clr-namespace:CurrencyLayerApp.Infrastructure.Converters"
       xmlns:resx="clr-namespace:CurrencyLayerApp.Resources.Strings"
@@ -16,11 +14,13 @@
     <Page.Resources>
         <converters:CurrentModelCollectionConverter x:Key="CurrencyConverterCollection" />
         <converters:CurrentModelConverter x:Key="CurrentModelConverter"/>
-        <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBox}">
+        <Style TargetType="ComboBox" 
+               BasedOn="{StaticResource ComboBox}">
             <Setter Property="Width" Value="60"/>
             <Setter Property="Margin" Value="1"/>
         </Style>
-        <Style x:Key="EmptyStyle" TargetType="chartingToolkit:NumericAxisLabel">
+        <Style x:Key="EmptyStyle" 
+               TargetType="chartingToolkit:NumericAxisLabel">
             <Setter Property="IsTabStop" Value="False" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -33,51 +33,61 @@
         <Style TargetType="chartingToolkit:AreaSeries">
             <Setter Property="Background" Value="#aa20b2aa"/>
         </Style>
-        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock}"/>
+        <Style TargetType="TextBlock" 
+               BasedOn="{StaticResource TextBlock}"/>
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="180"/>
         </Grid.ColumnDefinitions>
-        <Border Style="{StaticResource Border}" HorizontalAlignment="Stretch"
+        <Border Style="{StaticResource Border}" 
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
-            <chartingToolkit:Chart LegendTitle="{x:Static resx:HistoricalData.LegendTitle}" >
+            <chartingToolkit:Chart LegendTitle="{x:Static resx:HistoricalData.LegendTitle}" 
+                                   IsEnabled="{Binding IsEnabled}" >
                 <chartingToolkit:Chart.LegendStyle>
                     <Style TargetType="visualizationToolkit:Legend">
                         <Setter Property="Width" Value="0" />
-                     </Style>
+                    </Style>
                 </chartingToolkit:Chart.LegendStyle>
                 <chartingToolkit:Chart.Series>
-                    <chartingToolkit:AreaSeries Name="AreaSerie"
-                                            ItemsSource="{Binding Chart}"
-                                            IndependentValueBinding="{Binding Key}"
-                                            DependentValueBinding="{Binding Value}">
+                    <chartingToolkit:AreaSeries Name="AreaSerie" 
+                                                IsEnabled="{Binding IsEnabled}"
+                                                ItemsSource="{Binding Chart}"
+                                                IndependentValueBinding="{Binding Key}"
+                                                DependentValueBinding="{Binding Value}">
                         <chartingToolkit:AreaSeries.IndependentAxis>
-                           <chartingToolkit:CategoryAxis Title="Date (last 7 days)" Orientation="X"/>
+                            <chartingToolkit:CategoryAxis Title="Date (last 7 days)" Orientation="X"/>
                         </chartingToolkit:AreaSeries.IndependentAxis>
                         <chartingToolkit:AreaSeries.DependentRangeAxis>
-                            <chartingToolkit:LinearAxis Title="{Binding Description}" Orientation="Y" AxisLabelStyle="{StaticResource EmptyStyle}"  /> <!-- Minimum="{Binding Minimum}" Maximum="{Binding Maximum}"/>-->
+                            <chartingToolkit:LinearAxis Title="{Binding Description}" 
+                                                        Orientation="Y" 
+                                                        AxisLabelStyle="{StaticResource EmptyStyle}"  />
+                            <!-- Minimum="{Binding Minimum}" Maximum="{Binding Maximum}"/>-->
                         </chartingToolkit:AreaSeries.DependentRangeAxis>
                     </chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart.Series>
             </chartingToolkit:Chart>
         </Border>
-        <Border Grid.Column="1" Style="{StaticResource Border}"
-                Margin="0" Padding="8">
+        <Border Grid.Column="1" 
+                Style="{StaticResource Border}"
+                Margin="0" 
+                Padding="8">
             <StackPanel Orientation="Vertical" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
                     >
                 <TextBlock Text="{x:Static resx:HistoricalData.CurrencyPair}" />
                 <StackPanel Orientation="Horizontal">
-                    <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" SelectedItem="{Binding CurrencyModelFrom , Converter= {StaticResource CurrentModelConverter}}"
-                              />
+                    <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" 
+                              SelectedItem="{Binding CurrencyModelFrom , Converter= {StaticResource CurrentModelConverter}}"
+                              IsEnabled="{Binding IsEnabled}"/>
                     <TextBlock Text=" / "/>
-                    <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" SelectedItem="{Binding CurrencyModelTo , Converter= {StaticResource CurrentModelConverter}}"
-                              />
+                    <ComboBox ItemsSource="{Binding CurrencyModels , Converter={StaticResource CurrencyConverterCollection}}" 
+                              SelectedItem="{Binding CurrencyModelTo , Converter= {StaticResource CurrentModelConverter}}"
+                              IsEnabled="{Binding IsEnabled}"/>
                 </StackPanel>
-
             </StackPanel>
         </Border>
     </Grid>

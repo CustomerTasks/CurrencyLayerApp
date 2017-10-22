@@ -8,29 +8,36 @@ using CurrencyLayerApp.Infrastructure.Global;
 
 namespace CurrencyLayerApp.ViewModels
 {
-    class MainViewModel : ViewModelBase, IDownloader
+    /// <summary>
+    /// ViewModel for MainWindow.xaml
+    /// </summary>
+    class MainViewModel : ViewModelBase
     {
         public MainViewModel()
         {
             Color = Logger.Color.Gray;
-            Thread = new Thread(DownloadData);
-            Thread.Start();
         }
 
-
-
         #region <Fields>
-
+        /// <summary>
+        /// Current log message. 
+        /// (Message is located at bottom-right corner)
+        /// </summary>
         private string _logMessage;
+        /// <summary>
+        /// Current log color. 
+        /// (Color element is located at bottom-right corner)
+        /// </summary>
         private Logger.Color _color;
-        private bool _isOnline;
+        /// <summary>
+        /// Index of selected tab.
+        /// </summary>
         private int _index;
 
         #endregion
 
         #region <Properties>
-
-        public Thread Thread { get; set; }
+        
 
         public string LogMessage
         {
@@ -65,9 +72,8 @@ namespace CurrencyLayerApp.ViewModels
         #endregion
 
         #region <Methods>
-        
 
-        public void DownloadData()
+        protected override void ThreadMethod()
         {
             while (true)
             {
