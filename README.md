@@ -8,7 +8,7 @@ File Structure:<br />
 	3.3.Global - Just common data for global access (file/web paths, Settings, Logger)<br />
 4.Models - models for ViewModels (MVVM)<br />
 5.Resources - strings,pictures ...<br />
-	5.1.Pictures (flags & icons)
+	5.1.Pictures (flags & icons)<br />
 	5.2.Strings  <h1>!!!You can translate resources in this directory!!!!</h1><br />
 	 5.3.Curreccies.TXT - list of currencies<br />
 6.ViewModels - main operations<br />
