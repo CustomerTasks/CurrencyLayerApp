@@ -115,7 +115,7 @@ namespace CurrencyLayerApp.Resources.Strings {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, this application will restart..
+        ///   Ищет локализованную строку, похожую на Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, need to wait next update which takes typed time above..
         /// </summary>
         public static string SelectCurrenciesWarn {
             get {

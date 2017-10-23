@@ -118,7 +118,7 @@
                 <TextBlock Foreground="Blue" 
                        Text="{x:Static resx:SettingPage.Count}" 
                        FontSize="10"/>
-                <TextBlock Foreground="Red" 
+                <TextBlock Foreground="Blue" 
                            Text="{x:Static resx:SettingPage.SelectCurrenciesWarn}" 
                            FontSize="10" 
                            TextWrapping="Wrap" 

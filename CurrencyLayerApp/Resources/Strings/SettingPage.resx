@@ -136,7 +136,7 @@
     <value>Save</value>
   </data>
   <data name="SelectCurrenciesWarn" xml:space="preserve">
-    <value>Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, this application will restart.</value>
+    <value>Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, need to wait next update which takes typed time above.</value>
   </data>
   <data name="SetDefaultButton" xml:space="preserve">
     <value>Set Default</value>

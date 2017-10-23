@@ -123,6 +123,7 @@ namespace CurrencyLayerApp.ViewModels
                 if (!Settings.Instance.IsConfigured)
                     return;
                 Initialize();
+                UploadByManagers();
                 if (!IsCreated)
                 {
                     Calculation();
@@ -131,7 +132,6 @@ namespace CurrencyLayerApp.ViewModels
                     _grid.Dispatcher.BeginInvoke((Action) InitializeGrid);
                     IsCreated = true;
                 }
-                UploadByManagers();
                 CurrencyLayerApplication.ThreadSleep();
             }
         }
