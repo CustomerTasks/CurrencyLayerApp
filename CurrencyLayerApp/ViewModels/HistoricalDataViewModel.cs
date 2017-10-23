@@ -197,7 +197,6 @@ namespace CurrencyLayerApp.ViewModels
                 }
                 if (!Settings.Instance.IsConfigured) return;
                 Initialize();
-                UploadByManagers();
                 if (!IsCreated)
                 {
                     CheckSelectedModels();
@@ -205,6 +204,7 @@ namespace CurrencyLayerApp.ViewModels
                     Task.Run(() => _dataManager.Save(_historicalData));
                     IsCreated = true;
                 }
+                UploadByManagers();
                 CurrencyLayerApplication.ThreadSleep();
             }
         }
@@ -215,12 +215,15 @@ namespace CurrencyLayerApp.ViewModels
         private void CheckSelectedModels()
         {
             var currencyModels = CurrencyLayerApplication.CurrencyModels;
-            if (_currencyModelFrom == null || _currencyModelTo == null)
+            if (_historicalData != null && _historicalData.Any())
             {
-                CurrencyModelFrom =
-                    currencyModels.First(x => _historicalData.First().Value.Code == x.Code);
-                CurrencyModelTo =
-                    currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
+                if (_currencyModelFrom == null || _currencyModelTo == null)
+                {
+                    CurrencyModelFrom =
+                        currencyModels.First(x => _historicalData.First().Value.Code == x.Code);
+                    CurrencyModelTo =
+                        currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
+                }
             }
         }
 
