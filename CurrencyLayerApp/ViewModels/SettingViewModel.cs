@@ -143,6 +143,7 @@ namespace CurrencyLayerApp.ViewModels
         #endregion
 
         #region <Methods>
+
         /// <summary>
         /// Event for button "Save". 
         /// Stores selected currencies in local db.
@@ -174,10 +175,18 @@ namespace CurrencyLayerApp.ViewModels
                 }
                 uow.Save();
             }
+            if (!CheckIsConfigured()) return;
             //Refresh currencies in all tabs.
             CurrencyLayerApplication.RefreshModels();
             Settings.Instance.Save();
         }
+
+        private bool CheckIsConfigured()
+        {
+            Settings.Instance.IsConfigured = !string.IsNullOrEmpty(ApiKey);
+            return Settings.Instance.IsConfigured;
+        }
+
         /// <summary>
         /// Event for button "Set Default". 
         /// </summary>
@@ -192,6 +201,8 @@ namespace CurrencyLayerApp.ViewModels
                     currencyModel.IsSelected = false;
                 }
             }
+            FilterSearchedResult();
+            Settings.Instance.IsConfigured = false;
         }
         /// <summary>
         /// Filters and sorts data by search substring.
@@ -240,7 +251,9 @@ namespace CurrencyLayerApp.ViewModels
         protected override void Execute()
         {
             //ignored
+            DownloaderThread.Abort();
         }
+        
 
         #endregion
 

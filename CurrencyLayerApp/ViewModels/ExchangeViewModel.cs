@@ -115,7 +115,6 @@ namespace CurrencyLayerApp.ViewModels
                 if (CurrencyModels != null && CurrencyModels.Any())
                 {
                     SelectedCurrencyModel = _currencyModels.First();
-                    CurrencyValue = 1.0;
                 }
                 IsEnabled = true;
             }
@@ -126,7 +125,7 @@ namespace CurrencyLayerApp.ViewModels
         }
 
         /// <summary>
-        /// Execures main task.
+        /// Executes main task.
         /// </summary>
         protected override void Execute()
         {
@@ -134,14 +133,14 @@ namespace CurrencyLayerApp.ViewModels
             {
                 if (Settings.Instance.IsFihished)
                 {
-                    Thread.Abort();
+                    DownloaderThread.Abort();
                     break;
                 }
                 if (!Settings.Instance.IsConfigured)
-                    return;
+                    continue;
                 Initialize();
                 Calculation();
-                ThreadSleep();
+                CurrencyLayerApplication.ThreadSleep(1);
             }
         }
 
@@ -170,7 +169,7 @@ namespace CurrencyLayerApp.ViewModels
 
             //Converting. Formula: ConvertedCurrency[i] =  (CurrencyValue * CurrencyModels[i])/ SelectedCurrency.
             ExchangeModels = new ObservableCollection<ExchangeModel>(forCalculating.Select(x =>
-                x.ToExchangeModel(Math.Round(CurrencyValue / SelectedCurrencyModel.Rating, 5))));
+                x.ToExchangeModel(Math.Round(CurrencyValue / SelectedCurrencyModel.Rating,4))));
         }
 
         #endregion
