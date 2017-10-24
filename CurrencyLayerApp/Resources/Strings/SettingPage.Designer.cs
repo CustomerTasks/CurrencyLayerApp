@@ -79,15 +79,6 @@ namespace CurrencyLayerApp.Resources.Strings {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Maximum selected currencies - 7 (Auto taking first 7 currencies).
-        /// </summary>
-        public static string Count {
-            get {
-                return ResourceManager.GetString("Count", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Selected currencies:.
         /// </summary>
         public static string CurrencySelector {
@@ -106,6 +97,15 @@ namespace CurrencyLayerApp.Resources.Strings {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Warning #1:Maximum selected currencies - 7(Auto taking first 7 currencies).After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, need to wait next update which takes typed time above..
+        /// </summary>
+        public static string Info {
+            get {
+                return ResourceManager.GetString("Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Save.
         /// </summary>
         public static string SaveButton {
@@ -115,20 +115,20 @@ namespace CurrencyLayerApp.Resources.Strings {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, need to wait next update which takes typed time above..
-        /// </summary>
-        public static string SelectCurrenciesWarn {
-            get {
-                return ResourceManager.GetString("SelectCurrenciesWarn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Set Default.
         /// </summary>
         public static string SetDefaultButton {
             get {
                 return ResourceManager.GetString("SetDefaultButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Warning #2: API key is required field!.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

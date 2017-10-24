@@ -123,22 +123,22 @@
   <data name="ApiTime" xml:space="preserve">
     <value>Time between API calls (seconds):</value>
   </data>
-  <data name="Count" xml:space="preserve">
-    <value>Maximum selected currencies - 7 (Auto taking first 7 currencies)</value>
-  </data>
   <data name="CurrencySelector" xml:space="preserve">
     <value>Selected currencies:</value>
   </data>
   <data name="FindByCurrencyName" xml:space="preserve">
     <value>Find code by full name:</value>
   </data>
+  <data name="Info" xml:space="preserve">
+    <value>Warning #1:Maximum selected currencies - 7(Auto taking first 7 currencies).After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, need to wait next update which takes typed time above.</value>
+  </data>
   <data name="SaveButton" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="SelectCurrenciesWarn" xml:space="preserve">
-    <value>Warning: After selecting currencies need to have Internet connection for updating values.(Default~0). After applying new changes, need to wait next update which takes typed time above.</value>
-  </data>
   <data name="SetDefaultButton" xml:space="preserve">
     <value>Set Default</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning #2: API key is required field!</value>
   </data>
 </root>

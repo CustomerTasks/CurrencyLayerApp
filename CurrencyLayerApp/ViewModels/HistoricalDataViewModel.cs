@@ -8,6 +8,7 @@ using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.DataManagers;
 using CurrencyLayerApp.Infrastructure.Global;
 using CurrencyLayerApp.Models;
+using CurrencyLayerApp.Resources.Strings;
 
 namespace CurrencyLayerApp.ViewModels
 {
@@ -16,6 +17,11 @@ namespace CurrencyLayerApp.ViewModels
     /// </summary>
     class HistoricalDataViewModel : ViewModelBase, IInitializationManager
     {
+        public HistoricalDataViewModel()
+        {
+            IsEnabled = false;
+            Message = "Loading...";
+        }
         #region <Fields>
 
         /// <summary>
@@ -27,6 +33,8 @@ namespace CurrencyLayerApp.ViewModels
         /// Header for Y-axis
         /// </summary>
         private string _description;
+
+        private string _message;
 
         /// <summary>
         /// Currency Points (datetime, rating)
@@ -118,6 +126,16 @@ namespace CurrencyLayerApp.ViewModels
             }
         }
 
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region <Methods> 
@@ -128,6 +146,7 @@ namespace CurrencyLayerApp.ViewModels
         /// </summary>
         public void Initialize()
         {
+            //For avoiding bugs & null collections/values
             if (_currencyModels == null || !_currencyModels.Any())
             {
                 if (_currencyModels != null && _currencyModels.Any())
@@ -159,6 +178,7 @@ namespace CurrencyLayerApp.ViewModels
         /// </summary>
         private void InitializeChart()
         {
+            //For avoiding bugs & null collections/values
             if (!CurrencyModels.Any() || CurrencyModelFrom == null || CurrencyModelTo == null ||
                 _historicalData == null)
                 return;
@@ -192,10 +212,11 @@ namespace CurrencyLayerApp.ViewModels
             {
                 if (Settings.Instance.IsFihished)
                 {
-                    Thread.Abort();
+                    DownloaderThread.Abort();
                     break;
                 }
-                if (!Settings.Instance.IsConfigured) return;
+                if (!Settings.Instance.IsConfigured) continue;
+                UploadByManagers();
                 Initialize();
                 if (!IsCreated)
                 {
@@ -203,8 +224,9 @@ namespace CurrencyLayerApp.ViewModels
                     InitializeChart();
                     Task.Run(() => _dataManager.Save(_historicalData));
                     IsCreated = true;
+                    Message = "Done";
                 }
-                UploadByManagers();
+                
                 CurrencyLayerApplication.ThreadSleep();
             }
         }
@@ -215,14 +237,22 @@ namespace CurrencyLayerApp.ViewModels
         private void CheckSelectedModels()
         {
             var currencyModels = CurrencyLayerApplication.CurrencyModels;
-            if (_historicalData != null && _historicalData.Any())
+            if (_historicalData != null && _historicalData.Any() && currencyModels.Any())
             {
-                if (_currencyModelFrom == null || _currencyModelTo == null)
+                var currencies= _historicalData.First().Value.Currencies;
+                //For avoiding bugs & null collections/values. 
+                //Also checking containing some curency in last updated historical data.
+                if ((_currencyModelFrom == null || _currencyModelTo == null) 
+                    && currencyModels.Length== currencies.Values.Count
+                    && currencyModels.Any(x => currencies.First(t=>t.Key == x.Code).Key == x.Code )
+                    && currencyModels.Any(x => currencies.Last(t => t.Key == x.Code).Key == x.Code))
                 {
                     CurrencyModelFrom =
-                        currencyModels.First(x => _historicalData.First().Value.Code == x.Code);
+                        currencyModels.First(x => currencies.First(t => t.Key == x.Code).Key == x.Code);
                     CurrencyModelTo =
-                        currencyModels.First(x => _historicalData.Last().Value.Code == x.Code);
+                        currencyModels.First(x => currencies.First(t => t.Key == x.Code).Key == x.Code);
+                    Message = "Done.";
+                    IsEnabled = true;
                 }
             }
         }
@@ -232,6 +262,8 @@ namespace CurrencyLayerApp.ViewModels
         /// </summary>
         private void UploadByManagers()
         {
+            //For avoiding bugs & null collections.  If this values aren't  uploded from db early.
+            if (_currencyModels == null || !_currencyModels.Any()) return;
             _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
             var downloaded = _dataManager.Upload();
             if (downloaded != null)
@@ -244,6 +276,8 @@ namespace CurrencyLayerApp.ViewModels
             {
                 _dataManager = new LocalDataManagerForHistoricalData();
                 _historicalData = _dataManager.Upload();
+                if(_historicalData==null)
+                    Logger.SetLogMessage(MainLogMessages.EmptyHistory,Logger.Color.Red);
             }
             else
             {

@@ -117,19 +117,18 @@ namespace CurrencyLayerApp.ViewModels
             {
                 if (Settings.Instance.IsFihished)
                 {
-                    Thread.Abort();
+                    DownloaderThread.Abort();
                     break;
                 }
                 if (!Settings.Instance.IsConfigured)
-                    return;
+                    continue;
                 Initialize();
                 UploadByManagers();
                 if (!IsCreated)
                 {
                     Calculation();
                     Task.Run(() => _dataManager.Save(_liveCurrencyModel));
-                    //Function executes in UI-dispatcher-thread, no exeptions
-                    _grid.Dispatcher.BeginInvoke((Action) InitializeGrid);
+                    _grid.Dispatcher.BeginInvoke((Action)InitializeGrid);
                     IsCreated = true;
                 }
                 CurrencyLayerApplication.ThreadSleep();
@@ -293,6 +292,8 @@ namespace CurrencyLayerApp.ViewModels
         /// <param name="rates"></param>
         private void CreateGridMatrix(Tuple<CurrencyModel, ExchangeModel[]>[] rates)
         {
+            if (_rates == null) return;
+
             for (var i = 0; i <= _currencyModels.Count; i++)
             {
                 _grid.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
@@ -351,7 +352,8 @@ namespace CurrencyLayerApp.ViewModels
             {
                 Orientation = Orientation.Vertical,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness()
             };
         }
 

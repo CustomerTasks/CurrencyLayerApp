@@ -88,6 +88,9 @@
                               SelectedItem="{Binding CurrencyModelTo , Converter= {StaticResource CurrentModelConverter}}"
                               IsEnabled="{Binding IsEnabled}"/>
                 </StackPanel>
+                <TextBlock Text="{Binding Message}" FontSize="10"
+                           Foreground="CornflowerBlue"       
+                           TextAlignment="Center"/>
             </StackPanel>
         </Border>
     </Grid>

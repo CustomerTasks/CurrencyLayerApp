@@ -46,7 +46,7 @@ namespace CurrencyLayerApp.Infrastructure.Global
         /// <summary>
         /// App data state (including API key and configured DB)
         /// </summary>
-        public bool IsConfigured { get; set; } = true;
+        public bool IsConfigured { get; set; }
 
         #endregion
 

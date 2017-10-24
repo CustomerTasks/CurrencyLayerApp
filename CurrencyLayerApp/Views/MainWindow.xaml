@@ -35,7 +35,7 @@
         <TabControl Margin="8" 
                     SelectedIndex="{Binding Index}" 
                     Background="Transparent">
-            <TabItem>
+            <TabItem IsEnabled="{Binding IsEnabled}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/charts.png"/>
@@ -45,7 +45,7 @@
                 </TabItem.Header>
                 <Frame Source="Pages/CurrentData.xaml"/>
             </TabItem>
-            <TabItem>
+            <TabItem IsEnabled="{Binding IsEnabled}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/time.png"/>
@@ -55,7 +55,7 @@
                 </TabItem.Header>
                 <Frame Source="Pages/HistoricalData.xaml"/>
             </TabItem>
-            <TabItem>
+            <TabItem IsEnabled="{Binding IsEnabled}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Pictures/exchange.png"/>

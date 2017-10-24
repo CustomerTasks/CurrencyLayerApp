@@ -48,7 +48,11 @@ namespace CurrencyLayerApp.Infrastructure
         /// </summary>
         public static void ThreadSleep()
         {
-            Thread.Sleep(Settings.Instance.TimeBetweenCalls * 1000);
+            ThreadSleep(Settings.Instance.TimeBetweenCalls);
+        }
+        public static void ThreadSleep(int seconds)
+        {
+            Thread.Sleep(1000 * seconds);
         }
     }
 }

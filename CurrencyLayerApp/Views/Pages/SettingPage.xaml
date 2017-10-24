@@ -116,10 +116,11 @@
                     Grid.ColumnSpan="2" 
                     Grid.Row="2">
                 <TextBlock Foreground="Blue" 
-                       Text="{x:Static resx:SettingPage.Count}" 
+                       Text="{x:Static resx:SettingPage.Info}" 
+                           TextWrapping="Wrap" 
                        FontSize="10"/>
                 <TextBlock Foreground="Blue" 
-                           Text="{x:Static resx:SettingPage.SelectCurrenciesWarn}" 
+                           Text="{x:Static resx:SettingPage.Warning}" 
                            FontSize="10" 
                            TextWrapping="Wrap" 
                            Width="400"/>

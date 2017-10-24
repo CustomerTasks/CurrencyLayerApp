@@ -51,11 +51,13 @@
 
             <GroupBox  Grid.Column="1" 
                        Margin="12" 
-                       Header="{x:Static resx:ExchangeData.ConvertedCurrencies}" IsEnabled="False">
-                <ListView ItemsSource="{Binding ExchangeModels, Mode=OneWay}">
+                       Header="{x:Static resx:ExchangeData.ConvertedCurrencies}" 
+                       IsEnabled="False">
+                <ListView ItemsSource="{Binding ExchangeModels, Mode=OneWay}" 
+                          Width="200" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListView.View>
                         <GridView >
-                            <GridViewColumn Header="#">
+                            <GridViewColumn Header="#" Width="35">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Image Width="22" 
@@ -65,8 +67,8 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Code" DisplayMemberBinding="{Binding Code}"/>
-                            <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Rating}"/>
+                            <GridViewColumn Header="Code" DisplayMemberBinding="{Binding Code}" Width="40"/>
+                            <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Rating}" Width="118"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

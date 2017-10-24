@@ -27,10 +27,13 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="Border" BasedOn="{StaticResource Border}"/>
     </Page.Resources>
-    <Grid >
+    <Border Background="#bbbbbb">
         <Grid Name="CurrentDataGrid" 
-              Background="#bbbbbb" 
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              Background="Transparent" 
               IsEnabled="{Binding IsEnabled}"/>
-    </Grid>
+    </Border>
 </Page>

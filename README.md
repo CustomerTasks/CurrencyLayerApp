@@ -38,4 +38,6 @@ https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-
 http://www.entityframeworktutorial.net/code-first/what-is-code-first.aspx <br />
 7) Template method Pattern<br />
 http://www.dotnettricks.com/learn/designpatterns/template-method-design-pattern-c-sharp <br />
+8) Charting in WPF(buged lib)<br />
+http://www.c-sharpcorner.com/UploadFile/mahesh/charting-in-wpf/ <br />
 

@@ -4,7 +4,9 @@ using System.Windows.Input;
 using CurrencyLayerApp.Abstractions;
 using CurrencyLayerApp.DAL.Infrastructure;
 using CurrencyLayerApp.Helpers;
+using CurrencyLayerApp.Infrastructure;
 using CurrencyLayerApp.Infrastructure.Global;
+using CurrencyLayerApp.Resources.Strings;
 
 namespace CurrencyLayerApp.ViewModels
 {
@@ -12,7 +14,7 @@ namespace CurrencyLayerApp.ViewModels
     /// <summary>
     /// ViewModel for MainWindow.xaml
     /// </summary>
-    class MainViewModel : ViewModelBase
+    class MainViewModel : ViewModelBase, IInitializationManager
     {
         public MainViewModel()
         {
@@ -34,6 +36,8 @@ namespace CurrencyLayerApp.ViewModels
         /// Index of selected tab.
         /// </summary>
         private int _index;
+
+        private bool _isEnabled;
 
         #endregion
 
@@ -69,6 +73,11 @@ namespace CurrencyLayerApp.ViewModels
                 OnPropertyChanged();
             }
         }
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set { _isEnabled = value; OnPropertyChanged(); }
+        }
 
         #endregion
 
@@ -83,10 +92,10 @@ namespace CurrencyLayerApp.ViewModels
             {
                 if (Settings.Instance.IsFihished)
                 {
-                    Thread.Abort();
+                    DownloaderThread.Abort();
                     break;
                 }
-                Index = Settings.Instance.IsConfigured ? Index : 3;
+                Initialize();
                 var log = Logger.GetLogMessage();
                 if (log != null)
                 {
@@ -98,10 +107,25 @@ namespace CurrencyLayerApp.ViewModels
                     LogMessage = "";
                     Color = Logger.Color.Gray;
                 }
-                Thread.Sleep(1000);
+                CurrencyLayerApplication.ThreadSleep(1);
             }
         }
 
+        public void Initialize()
+        {
+            Index = Settings.Instance.IsConfigured ? Index : 3;
+            if (Index == 3 && !Settings.Instance.IsConfigured)
+            {
+                Logger.SetLogMessage(MainLogMessages.ApiKeyRequire, Logger.Color.Red);
+                IsEnabled = false;
+            }
+            else
+            {
+                IsEnabled = true;
+            }
+        }
         #endregion
+
+        
     }
 }
