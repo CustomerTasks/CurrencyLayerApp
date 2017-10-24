@@ -215,9 +215,10 @@ namespace CurrencyLayerApp.ViewModels
                     DownloaderThread.Abort();
                     break;
                 }
-                if (!Settings.Instance.IsConfigured) continue;
-                UploadByManagers();
                 Initialize();
+                if (!Settings.Instance.IsConfigured ||  (_currencyModels == null || !_currencyModels.Any())) continue;
+                
+                UploadByManagers();                
                 if (!IsCreated)
                 {
                     CheckSelectedModels();
@@ -263,7 +264,7 @@ namespace CurrencyLayerApp.ViewModels
         private void UploadByManagers()
         {
             //For avoiding bugs & null collections.  If this values aren't  uploded from db early.
-            if (_currencyModels == null || !_currencyModels.Any()) return;
+            
             _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
             var downloaded = _dataManager.Upload();
             if (downloaded != null)

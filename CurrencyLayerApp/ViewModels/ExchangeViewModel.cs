@@ -149,7 +149,7 @@ namespace CurrencyLayerApp.ViewModels
         /// </summary>
         private void Calculation()
         {
-            if (!CurrencyModels.Any()) return;
+            if (CurrencyModels == null || !CurrencyModels.Any()) return;
             if (SelectedCurrencyModel == null) SelectedCurrencyModel = CurrencyModels.First();
 
             //Takes last updated data for converting.
