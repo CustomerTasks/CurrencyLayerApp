@@ -216,9 +216,9 @@ namespace CurrencyLayerApp.ViewModels
                     break;
                 }
                 Initialize();
-                if (!Settings.Instance.IsConfigured ||  (_currencyModels == null || !_currencyModels.Any())) continue;
-                
-                UploadByManagers();                
+                if (!Settings.Instance.IsConfigured || (_currencyModels == null || !_currencyModels.Any())) continue;
+
+                UploadByManagers();
                 if (!IsCreated)
                 {
                     CheckSelectedModels();
@@ -227,7 +227,7 @@ namespace CurrencyLayerApp.ViewModels
                     IsCreated = true;
                     Message = "Done";
                 }
-                
+
                 CurrencyLayerApplication.ThreadSleep();
             }
         }
@@ -240,12 +240,12 @@ namespace CurrencyLayerApp.ViewModels
             var currencyModels = CurrencyLayerApplication.CurrencyModels;
             if (_historicalData != null && _historicalData.Any() && currencyModels.Any())
             {
-                var currencies= _historicalData.First().Value.Currencies;
+                var currencies = _historicalData.First().Value.Currencies;
                 //For avoiding bugs & null collections/values. 
                 //Also checking containing some curency in last updated historical data.
-                if ((_currencyModelFrom == null || _currencyModelTo == null) 
-                    && currencyModels.Length== currencies.Values.Count
-                    && currencyModels.Any(x => currencies.First(t=>t.Key == x.Code).Key == x.Code )
+                if ((_currencyModelFrom == null || _currencyModelTo == null)
+                    && currencyModels.Length == currencies.Values.Count
+                    && currencyModels.Any(x => currencies.First(t => t.Key == x.Code).Key == x.Code)
                     && currencyModels.Any(x => currencies.Last(t => t.Key == x.Code).Key == x.Code))
                 {
                     CurrencyModelFrom =
@@ -264,7 +264,7 @@ namespace CurrencyLayerApp.ViewModels
         private void UploadByManagers()
         {
             //For avoiding bugs & null collections.  If this values aren't  uploded from db early.
-            
+
             _dataManager = new ApiDataManagerForHistoricalData(_currencyModels.ToArray());
             var downloaded = _dataManager.Upload();
             if (downloaded != null)
@@ -277,8 +277,8 @@ namespace CurrencyLayerApp.ViewModels
             {
                 _dataManager = new LocalDataManagerForHistoricalData();
                 _historicalData = _dataManager.Upload();
-                if(_historicalData==null)
-                    Logger.SetLogMessage(MainLogMessages.EmptyHistory,Logger.Color.Red);
+                if (_historicalData == null)
+                    Logger.SetLogMessage(MainLogMessages.EmptyHistory, Logger.Color.Red);
             }
             else
             {

@@ -169,7 +169,7 @@ namespace CurrencyLayerApp.ViewModels
 
             //Converting. Formula: ConvertedCurrency[i] =  (CurrencyValue * CurrencyModels[i])/ SelectedCurrency.
             ExchangeModels = new ObservableCollection<ExchangeModel>(forCalculating.Select(x =>
-                x.ToExchangeModel(Math.Round(CurrencyValue / SelectedCurrencyModel.Rating,4))));
+                x.ToExchangeModel(Math.Round(CurrencyValue / SelectedCurrencyModel.Rating, 4))));
         }
 
         #endregion

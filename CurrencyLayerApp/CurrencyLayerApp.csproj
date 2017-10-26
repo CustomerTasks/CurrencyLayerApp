@@ -174,10 +174,10 @@
       <DependentUpon>SettingPage.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CurrentDataViewModel.cs" />
-    <Compile Include="ViewModels\HistoricalDataViewModel.cs" />
     <Compile Include="Infrastructure\DataManagers\LocalDataManagerForCurrencies.cs" />
-    <Compile Include="ViewModels\ExchangeViewModel.cs" />
     <Compile Include="Abstractions\IInitializationManager.cs" />
+    <Compile Include="ViewModels\ExchangeViewModel.cs" />
+    <Compile Include="ViewModels\HistoricalDataViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
